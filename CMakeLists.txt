@@ -16,7 +16,9 @@ find_package(Qt6 COMPONENTS
 add_executable(coursework main.cpp
         mainwindow.h
         mainwindow.cpp
-        mainwindow.ui)
+        mainwindow.ui
+        person.h
+        person.cpp)
 
 target_link_libraries(coursework
         Qt::Core
