@@ -31,12 +31,15 @@ class Person : public QObject
         QString getPlaceOfBirth() const;
         void setPlaceOfBirth(const QString &placeOfBirth);
 
+        QString getProfession() const;
+        void setProfession(const QString &profession);
 
     private:
         QString name;
         Gender gender;
         QDate birthday;
         QString placeOfBirth;
+        QString profession;
 };
 
 #endif

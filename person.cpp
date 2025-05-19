@@ -36,3 +36,10 @@ void Person::setPlaceOfBirth(const QString &placeOfBirth) {
     this->placeOfBirth = placeOfBirth;
 }
 
+QString Person::getProfession() const {
+    return this->profession;
+}
+
+void Person::setProfession(const QString &profession) {
+    this->profession = profession;
+}
