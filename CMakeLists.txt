@@ -13,7 +13,11 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(coursework main.cpp)
+add_executable(coursework main.cpp
+        mainwindow.h
+        mainwindow.cpp
+        mainwindow.ui)
+
 target_link_libraries(coursework
         Qt::Core
         Qt::Gui
