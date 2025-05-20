@@ -6,3 +6,11 @@ PersonItem::PersonItem(Person *person)
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 }
 
+int PersonItem::getPersonId() const {
+    return person->getId();
+}
+
+void PersonItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    QGraphicsTextItem::mousePressEvent(event);
+    emit personSelected(getPersonId());
+}

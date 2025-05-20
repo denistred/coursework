@@ -19,6 +19,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             this, &MainWindow::showInputDialog);
     connect(ui->deleteButton, &QPushButton::clicked,
                 ui->listWidget, &PersonListWidget::removeSelectedPerson);
+
+    connect(ui->listWidget, &PersonListWidget::personSelected,
+        scene, &PersonScene::selectPersonById);
+
+    connect(scene, &PersonScene::personSelected,
+            ui->listWidget, &PersonListWidget::selectPersonById);
+
 }
 
 

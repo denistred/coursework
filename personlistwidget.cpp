@@ -21,7 +21,7 @@ void PersonListWidget::addPerson(Person *person)
 {
     personsList.append(person);
     QStandardItem *item = new QStandardItem(person->getName());
-    item->setData(QVariant::fromValue(personsList.size() - 1), Qt::UserRole);
+    item->setData(person->getId(), Qt::UserRole);
 
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 
@@ -51,6 +51,13 @@ void PersonListWidget::onItemDoubleClicked(const QModelIndex &index)
             person->setProfession(dialog.getProfession());
             QMessageBox::information(this, "Данные", "Данные изменены");
         }
+    }
+}
+
+void PersonListWidget::onItemClicked(const QModelIndex &index) {
+    int row = index.row();
+    if (row >= 0 && row < personsList.size()) {
+        emit personSelected(personsList[row]->getId());
     }
 }
 
@@ -113,5 +120,14 @@ void PersonListWidget::removeSelectedPerson()
         delete personsList[row];
         personsList.removeAt(row);
         model->removeRow(row);
+    }
+}
+
+void PersonListWidget::selectPersonById(int id) {
+    for (int i = 0; i < personsList.size(); ++i) {
+        if (personsList[i]->getId() == id) {
+            setCurrentIndex(model->index(i, 0));
+            break;
+        }
     }
 }

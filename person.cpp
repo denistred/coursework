@@ -1,7 +1,18 @@
 #include "person.h"
 
+int Person::nextId = 0;
+
 Person::Person(QObject *parent) : QObject(parent)
 {
+    this->id = nextId++;
+}
+
+int Person::getId() const {
+    return this->id;
+}
+
+void Person::setId(int id) {
+    this->id = id;
 }
 
 QString Person::getName() const {

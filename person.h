@@ -11,8 +11,11 @@ class Person : public QObject
 
 
     public:
+        static int nextId;
         explicit Person(QObject *parent = nullptr);
 
+        int getId() const;
+        void setId(int newId);
 
         QString getName() const;
         void setName(const QString &name);
@@ -30,11 +33,13 @@ class Person : public QObject
         void setProfession(const QString &profession);
 
     private:
+        int id;
         QString name;
         QString gender;
         QDate birthday;
         QString placeOfBirth;
         QString profession;
 };
+
 
 #endif
