@@ -1,4 +1,5 @@
 #include "personlistwidget.h"
+#include "inputdialog.h"
 #include <QStandardItem>
 #include <QMessageBox>
 
@@ -34,10 +35,17 @@ void PersonListWidget::onItemDoubleClicked(const QModelIndex &index)
     int row = index.row();
     if (row >= 0 && row < personsList.size()) {
         Person *person = personsList[row];
-        QMessageBox::information(
-            this,
-            "Данные о человеке",
-            person->getName()
-        );
+
+        InputDialog dialog(this, person);
+
+        if (dialog.exec() == QDialog::Accepted) {
+            person->setName(dialog.getName());
+            model->item(row)->setText(person->getName());
+            person->setGender(dialog.getGender());
+            person->setBirthday(dialog.getBirthday());
+            person->setPlaceOfBirth(dialog.getPlaceOfBirth());
+            person->setProfession(dialog.getProfession());
+            QMessageBox::information(this, "Данные", "Данные изменены");
+        }
     }
 }

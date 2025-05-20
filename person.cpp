@@ -1,6 +1,6 @@
 #include "person.h"
 
-Person::Person(QObject *parent) : QObject(parent), gender(Male)
+Person::Person(QObject *parent) : QObject(parent)
 {
 }
 
@@ -12,11 +12,11 @@ void Person::setName(const QString &name) {
     this->name = name;
 }
 
-Person::Gender Person::getGender() const {
+QString Person::getGender() const {
     return this->gender;
 }
 
-void Person::setGender(const Gender &gender) {
+void Person::setGender(const QString &gender) {
     this->gender = gender;
 }
 

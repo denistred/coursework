@@ -13,17 +13,12 @@ class Person : public QObject
     public:
         explicit Person(QObject *parent = nullptr);
 
-        enum Gender {
-            Male,
-            Female
-        };
-        Q_ENUM(Gender)
 
         QString getName() const;
         void setName(const QString &name);
 
-        Gender getGender() const;
-        void setGender(const Gender &gender);
+        QString getGender() const;
+        void setGender(const QString &gender);
 
         QDate getBirthday() const;
         void setBirthday(const QDate &date);
@@ -36,7 +31,7 @@ class Person : public QObject
 
     private:
         QString name;
-        Gender gender;
+        QString gender;
         QDate birthday;
         QString placeOfBirth;
         QString profession;

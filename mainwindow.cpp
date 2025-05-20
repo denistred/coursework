@@ -24,9 +24,12 @@ void MainWindow::showInputDialog() {
 
     if (dialog.exec() == QDialog::Accepted) {
         QString message = QString("Dialog is working");
-        QString name = dialog.getName();
         Person *person = new Person();
-        person->setName(name);
+        person->setName(dialog.getName());
+        person->setGender(dialog.getGender());
+        person->setBirthday(dialog.getBirthday());
+        person->setPlaceOfBirth(dialog.getPlaceOfBirth());
+        person->setProfession(dialog.getProfession());
         this->addListItem(person);
 
         QMessageBox::information(this, "Данные", message);
