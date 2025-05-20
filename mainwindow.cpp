@@ -7,12 +7,18 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->listWidget->loadFromFile("persons.json");
-    setWindowTitle(tr("Qt Application"));
+    setWindowTitle(tr("Построение гениалогического древа"));
     setMinimumSize(400, 300);
     resize(800, 600);
 
-    connect(ui->pushButton, &QPushButton::clicked,
+    scene = new PersonScene(this);
+    ui->graphicsView->setScene(scene);
+
+
+    connect(ui->addButton, &QPushButton::clicked,
             this, &MainWindow::showInputDialog);
+    connect(ui->deleteButton, &QPushButton::clicked,
+                ui->listWidget, &PersonListWidget::removeSelectedPerson);
 }
 
 
@@ -24,7 +30,7 @@ void MainWindow::showInputDialog() {
     InputDialog dialog(this);
 
     if (dialog.exec() == QDialog::Accepted) {
-        QString message = QString("Dialog is working");
+        QString message = QString("Данные добавлены");
         Person *person = new Person();
         person->setName(dialog.getName());
         person->setGender(dialog.getGender());
@@ -40,6 +46,8 @@ void MainWindow::showInputDialog() {
 void MainWindow::addListItem(Person *person) {
     person->setName(person->getName());
     ui->listWidget->addPerson(person);
+
+    scene->addPerson(person);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {

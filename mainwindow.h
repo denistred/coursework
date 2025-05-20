@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "person.h"
+#include "personscene.h"
 
 namespace Ui {
     class MainWindow;
@@ -25,6 +26,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void closeEvent(QCloseEvent *event);
+    PersonScene *scene;
 };
 
 #endif

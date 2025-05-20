@@ -19,6 +19,9 @@ public:
     signals:
         void personDoubleClicked(const Person &person);
 
+public slots:
+    void removeSelectedPerson();
+
 private slots:
     void onItemDoubleClicked(const QModelIndex &index);
 

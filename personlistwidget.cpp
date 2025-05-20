@@ -90,17 +90,28 @@ void PersonListWidget::loadFromFile(const QString &filename)
     QJsonArray array = doc.array();
     for (const QJsonValue &val : array) {
         QJsonObject obj = val.toObject();
-        Person *p = new Person();
-        p->setName(obj["name"].toString());
-        p->setGender(obj["gender"].toString());
+        Person *person = new Person();
+        person->setName(obj["name"].toString());
+        person->setGender(obj["gender"].toString());
 
         QDate date = QDate::fromString(obj["birthday"].toString(), Qt::ISODate);
         if (date.isValid())
-            p->setBirthday(date);
+            person->setBirthday(date);
 
-        p->setPlaceOfBirth(obj["placeOfBirth"].toString());
-        p->setProfession(obj["profession"].toString());
+        person->setPlaceOfBirth(obj["placeOfBirth"].toString());
+        person->setProfession(obj["profession"].toString());
 
-        addPerson(p);
+        addPerson(person);
+    }
+}
+
+void PersonListWidget::removeSelectedPerson()
+{
+    QModelIndex index = currentIndex();
+    int row = index.row();
+    if (row >= 0 && row < personsList.size()) {
+        delete personsList[row];
+        personsList.removeAt(row);
+        model->removeRow(row);
     }
 }

@@ -1,8 +1,6 @@
-#include <iostream>
 #include <QApplication>
 #include "mainwindow.h"
-#include "person.h"
-#include <QString>
+
 
 int main(int argc, char *argv[])
 {

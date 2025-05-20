@@ -27,7 +27,11 @@ add_executable(coursework main.cpp
         inputdialog.h
         inputdialog.cpp
         inputdialog.ui
-        )
+        personitem.h
+        personitem.cpp
+        personscene.h
+        personscene.cpp
+)
 
 target_link_libraries(coursework
         Qt::Core

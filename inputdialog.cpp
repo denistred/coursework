@@ -2,10 +2,8 @@
 #include "ui_inputdialog.h"
 
 
-InputDialog::InputDialog(QWidget *parent, Person *person) :
-    QDialog(parent),
-    ui(new Ui::InputDialog)
-{
+InputDialog::InputDialog(QWidget *parent, Person *person) : QDialog(parent),
+                                                            ui(new Ui::InputDialog) {
     ui->setupUi(this);
 
     setWindowTitle("Изменение данных");
@@ -16,8 +14,7 @@ InputDialog::InputDialog(QWidget *parent, Person *person) :
     }
 }
 
-InputDialog::~InputDialog()
-{
+InputDialog::~InputDialog() {
     delete ui;
 }
 
@@ -33,6 +30,7 @@ void InputDialog::setName(const QString &name) {
 QString InputDialog::getGender() const {
     return ui->genderComboBox->currentText();
 }
+
 void InputDialog::setGender(const QString &gender) {
     ui->genderComboBox->setCurrentText(gender);
 }
