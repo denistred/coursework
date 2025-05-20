@@ -1,4 +1,4 @@
-#include "personitem.h"
+#include "../include/personitem.h"
 
 PersonItem::PersonItem(Person *person)
     : QGraphicsTextItem(person->getName()), person(person)

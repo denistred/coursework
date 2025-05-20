@@ -1,4 +1,4 @@
-#include "person.h"
+#include "../include/person.h"
 
 int Person::nextId = 0;
 

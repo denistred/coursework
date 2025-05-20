@@ -1,5 +1,5 @@
-#include "personlistwidget.h"
-#include "inputdialog.h"
+#include "../include/personlistwidget.h"
+#include "../include/inputdialog.h"
 #include <QStandardItem>
 #include <QMessageBox>
 #include <QFile>

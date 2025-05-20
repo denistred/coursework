@@ -17,20 +17,20 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 add_executable(coursework main.cpp
-        personlistwidget.h
-        personlistwidget.cpp
-        mainwindow.h
-        mainwindow.cpp
-        mainwindow.ui
-        person.h
-        person.cpp
-        inputdialog.h
-        inputdialog.cpp
-        inputdialog.ui
-        personitem.h
-        personitem.cpp
-        personscene.h
-        personscene.cpp
+        include/personlistwidget.h
+        src/personlistwidget.cpp
+        include/mainwindow.h
+        src/mainwindow.cpp
+        ui/mainwindow.ui
+        include/person.h
+        src/person.cpp
+        include/inputdialog.h
+        src/inputdialog.cpp
+        ui/inputdialog.ui
+        include/personitem.h
+        src/personitem.cpp
+        include/personscene.h
+        src/personscene.cpp
 )
 
 target_link_libraries(coursework

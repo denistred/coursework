@@ -1,7 +1,7 @@
 #include <QMessageBox>
 #include "mainwindow.h"
-#include "inputdialog.h"
-#include "personlistwidget.h"
+#include "../include/inputdialog.h"
+#include "../include/personlistwidget.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {

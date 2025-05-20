@@ -1,4 +1,4 @@
-#include "inputdialog.h"
+#include "../include/inputdialog.h"
 #include "ui_inputdialog.h"
 
 

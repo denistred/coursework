@@ -1,5 +1,5 @@
-#include "personscene.h"
-#include "personitem.h"
+#include "../include/personscene.h"
+#include "../include/personitem.h"
 
 PersonScene::PersonScene(QObject *parent) : QGraphicsScene(parent) {}
 
