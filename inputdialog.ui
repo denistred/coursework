@@ -17,45 +17,45 @@
    <item row="0" column="0" colspan="2">
     <layout class="QFormLayout" name="formLayout">
      <item row="4" column="0">
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="professionLabel">
        <property name="text">
         <string>Деятельность</string>
        </property>
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="placeOfBirthLabel">
        <property name="text">
         <string>Место рождения</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="birthdayLabel">
        <property name="text">
         <string>Дата рождения</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLineEdit" name="lineEdit_2"/>
+      <widget class="QLineEdit" name="placeOfBirthLineEdit"/>
      </item>
      <item row="0" column="0">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="nameLabel">
        <property name="text">
         <string>ФИО</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="genderLabel">
        <property name="text">
         <string>Пол</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="genderComboBox">
        <item>
         <property name="text">
          <string>Мужской</string>
@@ -69,13 +69,13 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEdit_3"/>
+      <widget class="QLineEdit" name="nameLineedit"/>
      </item>
      <item row="4" column="1">
-      <widget class="QLineEdit" name="lineEdit_4"/>
+      <widget class="QLineEdit" name="professionLineEdit"/>
      </item>
      <item row="2" column="1">
-      <widget class="QDateEdit" name="dateEdit"/>
+      <widget class="QDateEdit" name="birthdayDateEdit"/>
      </item>
     </layout>
    </item>

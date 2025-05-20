@@ -15,9 +15,11 @@ public:
     explicit InputDialog(QWidget *parent = nullptr);
     ~InputDialog();
 
-    QString firstName() const;
-    QString lastName() const;
-    int age() const;
+    QString getName() const;
+    QString getGender() const;
+    QString getBirthday() const;
+    QString getPlaceOfBirth() const;
+    QString getProfession() const;
 
 private:
     Ui::InputDialog *ui;
