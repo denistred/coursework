@@ -13,6 +13,8 @@ public:
 
     void addPerson(Person *person);
     void clear();
+    void saveToFile(const QString &fileName);
+    void loadFromFile(const QString &filename);
 
     signals:
         void personDoubleClicked(const Person &person);

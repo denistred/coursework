@@ -6,6 +6,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    ui->listWidget->loadFromFile("persons.json");
     setWindowTitle(tr("Qt Application"));
     setMinimumSize(400, 300);
     resize(800, 600);
@@ -39,4 +40,9 @@ void MainWindow::showInputDialog() {
 void MainWindow::addListItem(Person *person) {
     person->setName(person->getName());
     ui->listWidget->addPerson(person);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    ui->listWidget->saveToFile("persons.json");
+    QMainWindow::closeEvent(event);
 }

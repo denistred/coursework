@@ -2,6 +2,10 @@
 #include "inputdialog.h"
 #include <QStandardItem>
 #include <QMessageBox>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 PersonListWidget::PersonListWidget(QWidget *parent)
     : QListView(parent), model(new QStandardItemModel(this))
@@ -47,5 +51,56 @@ void PersonListWidget::onItemDoubleClicked(const QModelIndex &index)
             person->setProfession(dialog.getProfession());
             QMessageBox::information(this, "Данные", "Данные изменены");
         }
+    }
+}
+
+void PersonListWidget::saveToFile(const QString &filename)
+{
+    QJsonArray array;
+    for (const Person *p : personsList) {
+        QJsonObject obj;
+        obj["name"] = p->getName();
+        obj["gender"] = p->getGender();
+        obj["birthday"] = p->getBirthday().toString(Qt::ISODate);
+        obj["placeOfBirth"] = p->getPlaceOfBirth();
+        obj["profession"] = p->getProfession();
+        array.append(obj);
+    }
+
+    QJsonDocument doc(array);
+    QFile file(filename);
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(doc.toJson());
+        file.close();
+    }
+}
+
+void PersonListWidget::loadFromFile(const QString &filename)
+{
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly)) return;
+
+    QByteArray data = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    if (!doc.isArray()) return;
+
+    clear();
+    QJsonArray array = doc.array();
+    for (const QJsonValue &val : array) {
+        QJsonObject obj = val.toObject();
+        Person *p = new Person();
+        p->setName(obj["name"].toString());
+        p->setGender(obj["gender"].toString());
+
+        QDate date = QDate::fromString(obj["birthday"].toString(), Qt::ISODate);
+        if (date.isValid())
+            p->setBirthday(date);
+
+        p->setPlaceOfBirth(obj["placeOfBirth"].toString());
+        p->setProfession(obj["profession"].toString());
+
+        addPerson(p);
     }
 }
