@@ -131,3 +131,7 @@ void PersonListWidget::selectPersonById(int id) {
         }
     }
 }
+
+QList<Person *> PersonListWidget::getPersons() const {
+    return personsList;
+}

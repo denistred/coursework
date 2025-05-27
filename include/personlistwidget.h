@@ -16,6 +16,7 @@ public:
     void saveToFile(const QString &fileName);
     void loadFromFile(const QString &filename);
     void selectPersonById(int id);
+    QList<Person *> getPersons() const;
 
     signals:
         void personDoubleClicked(const Person &person);

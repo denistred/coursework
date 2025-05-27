@@ -21,6 +21,7 @@ QString Person::getName() const {
 
 void Person::setName(const QString &name) {
     this->name = name;
+    emit nameChanged(this->name);
 }
 
 QString Person::getGender() const {

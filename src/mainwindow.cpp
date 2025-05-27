@@ -1,19 +1,25 @@
 #include <QMessageBox>
-#include "mainwindow.h"
+#include "include/mainwindow.h"
+
 #include "../include/inputdialog.h"
 #include "../include/personlistwidget.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    ui->listWidget->loadFromFile("persons.json");
+
     setWindowTitle(tr("Построение гениалогического древа"));
     setMinimumSize(400, 300);
     resize(800, 600);
 
+    ui->listWidget->loadFromFile("persons.json");
+
+
     scene = new PersonScene(this);
     ui->graphicsView->setScene(scene);
-
+    for (Person *p : ui->listWidget->getPersons()) {
+        scene->addPerson(p);
+    }
 
     connect(ui->addButton, &QPushButton::clicked,
             this, &MainWindow::showInputDialog);

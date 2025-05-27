@@ -32,6 +32,9 @@ class Person : public QObject
         QString getProfession() const;
         void setProfession(const QString &profession);
 
+    signals:
+        void nameChanged(const QString &newName);
+
     private:
         int id;
         QString name;
