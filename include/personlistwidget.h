@@ -4,6 +4,7 @@
 #include <QListView>
 #include <QStandardItemModel>
 #include "person.h"
+#include "personscene.h"
 
 class PersonListWidget : public QListView
 {
@@ -17,6 +18,8 @@ public:
     void loadFromFile(const QString &filename);
     void selectPersonById(int id);
     QList<Person *> getPersons() const;
+
+    void setScene(PersonScene *scene);
 
     signals:
         void personDoubleClicked(const Person &person);
@@ -32,6 +35,7 @@ private slots:
 private:
     QStandardItemModel *model;
     QList<Person*> personsList;
+    PersonScene *scene = nullptr;
 };
 
 #endif

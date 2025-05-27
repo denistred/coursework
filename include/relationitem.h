@@ -9,6 +9,9 @@ class RelationItem : public QGraphicsLineItem {
 public:
     RelationItem(PersonItem *start, PersonItem *end, QGraphicsItem *parent = nullptr);
     void updatePosition();
+    PersonItem *getFirst() const;
+    PersonItem *getSecond() const;
+
 
 private:
     PersonItem *fromItem;

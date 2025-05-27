@@ -14,6 +14,8 @@ public:
     void addPerson(Person *person);
     void selectPersonById(int id);
     void createRelationBetweenSelected();
+    void removeRelationBetweenSelected();
+    void restoreRelations(const QList<Person *> &persons);
     signals:
         void personSelected(int personId);
 

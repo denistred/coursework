@@ -15,15 +15,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     setMinimumSize(400, 300);
     resize(1000, 800);
 
-    ui->listWidget->loadFromFile("persons.json");
+
 
 
     scene = new PersonScene(this);
     ui->graphicsView->setScene(scene);
+    ui->listWidget->setScene(scene);
     for (Person *p : ui->listWidget->getPersons()) {
         scene->addPerson(p);
     }
 
+    ui->listWidget->loadFromFile("persons.json");
     connect(ui->addButton, &QPushButton::clicked,
             this, &MainWindow::showInputDialog);
     connect(ui->deleteButton, &QPushButton::clicked,
@@ -35,9 +37,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(scene, &PersonScene::personSelected,
             ui->listWidget, &PersonListWidget::selectPersonById);
 
+
     connect(ui->addRelationButton, &QPushButton::clicked, this, [this]() {
         scene->createRelationBetweenSelected();
     });
+
+    connect(ui->removeRelationButton, &QPushButton::clicked, this, [this]() {
+        scene->removeRelationBetweenSelected();
+    });
+
 }
 
 

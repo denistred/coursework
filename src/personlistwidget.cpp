@@ -1,4 +1,7 @@
 #include "../include/personlistwidget.h"
+
+#include <iostream>
+
 #include "../include/inputdialog.h"
 #include <QStandardItem>
 #include <QMessageBox>
@@ -67,12 +70,19 @@ void PersonListWidget::saveToFile(const QString &filename)
     QJsonArray array;
     for (const Person *p : personsList) {
         QJsonObject obj;
+        obj["id"] = p->getId();
         obj["name"] = p->getName();
         obj["gender"] = p->getGender();
         obj["birthday"] = p->getBirthday().toString(Qt::ISODate);
         obj["placeOfBirth"] = p->getPlaceOfBirth();
         obj["profession"] = p->getProfession();
         obj["photoPath"] = p->getPhotoPath();
+        QJsonArray relArray;
+        for (int id : p->getRelations()) {
+            relArray.append(id);
+        }
+        obj["relations"] = relArray;
+
         array.append(obj);
     }
 
@@ -96,10 +106,16 @@ void PersonListWidget::loadFromFile(const QString &filename)
     if (!doc.isArray()) return;
 
     clear();
+
     QJsonArray array = doc.array();
+    personsList.clear();
+    QList<QList<int>> pendingRelations;
+
     for (const QJsonValue &val : array) {
         QJsonObject obj = val.toObject();
+
         Person *person = new Person();
+        person->setId(obj["id"].toInt());
         person->setName(obj["name"].toString());
         person->setGender(obj["gender"].toString());
 
@@ -111,7 +127,41 @@ void PersonListWidget::loadFromFile(const QString &filename)
         person->setProfession(obj["profession"].toString());
         person->setPhotoPath(obj["photoPath"].toString());
 
-        addPerson(person);
+        personsList.append(person);
+
+        QStandardItem *item = new QStandardItem(person->getName());
+        item->setData(person->getId(), Qt::UserRole);
+        item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+        model->appendRow(item);
+
+        if (scene) {
+            std::cout << "FIRST SCENE CREATING" << std::endl;
+            PersonItem *pItem = new PersonItem(person);
+            scene->addItem(pItem);
+        }
+
+        // Сохраняем связи по id
+        QJsonArray relArray = obj["relations"].toArray();
+        QList<int> relations;
+        for (const QJsonValue &v : relArray) {
+            relations.append(v.toInt());
+        }
+        pendingRelations.append(relations);
+    }
+
+    // Привязываем id связей
+    for (int i = 0; i < personsList.size(); ++i) {
+        Person *p = personsList[i];
+        for (int relatedId : pendingRelations[i]) {
+            if (!p->getRelations().contains(relatedId))
+                p->addRelation(relatedId);
+        }
+    }
+    std::cout << "trying to enter" << std::endl;
+    // Восстанавливаем линии в сцене
+    if (scene) {
+        std::cout << "entered scene" << std::endl;
+        scene->restoreRelations(personsList);
     }
 }
 
@@ -137,4 +187,8 @@ void PersonListWidget::selectPersonById(int id) {
 
 QList<Person *> PersonListWidget::getPersons() const {
     return personsList;
+}
+
+void PersonListWidget::setScene(PersonScene *s) {
+    scene = s;
 }

@@ -1,52 +1,53 @@
 #ifndef PERSON_H
 #define PERSON_H
 
-#include <QDate>
-#include <QString>
 #include <QObject>
+#include <QDate>
 
 class Person : public QObject
 {
     Q_OBJECT
+public:
+    explicit Person(QObject *parent = nullptr);
 
+    int getId() const;
+    void setId(int id);
 
-    public:
-        static int nextId;
-        explicit Person(QObject *parent = nullptr);
+    QString getName() const;
+    void setName(const QString &name);
 
-        int getId() const;
-        void setId(int newId);
+    QString getGender() const;
+    void setGender(const QString &gender);
 
-        QString getName() const;
-        void setName(const QString &name);
+    QDate getBirthday() const;
+    void setBirthday(const QDate &birthday);
 
-        QString getGender() const;
-        void setGender(const QString &gender);
+    QString getPlaceOfBirth() const;
+    void setPlaceOfBirth(const QString &placeOfBirth);
 
-        QDate getBirthday() const;
-        void setBirthday(const QDate &date);
+    QString getProfession() const;
+    void setProfession(const QString &profession);
 
-        QString getPlaceOfBirth() const;
-        void setPlaceOfBirth(const QString &placeOfBirth);
+    QString getPhotoPath() const;
+    void setPhotoPath(const QString &photoPath);
 
-        QString getProfession() const;
-        void setProfession(const QString &profession);
-
-        QString getPhotoPath() const;
-        void setPhotoPath(const QString &path);
+    QList<int> getRelations() const;
+    void addRelation(int id);
+    void removeRelation(int id);
+    void setRelations(const QList<int> &relations);
 
     signals:
-        void nameChanged(const QString &newName);
+        void dataChanged();
 
-    private:
-        int id;
-        QString name;
-        QString gender;
-        QDate birthday;
-        QString placeOfBirth;
-        QString profession;
-        QString photoPath;
+private:
+    int id = -1;
+    QString name;
+    QString gender;
+    QDate birthday;
+    QString placeOfBirth;
+    QString profession;
+    QString photoPath;
+    QList<int> relations;
 };
 
-
-#endif
+#endif // PERSON_H

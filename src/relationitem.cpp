@@ -16,3 +16,11 @@ void RelationItem::updatePosition() {
     QPointF p2 = toItem->sceneBoundingRect().center();
     setLine(QLineF(p1, p2));
 }
+
+PersonItem *RelationItem::getFirst() const {
+    return fromItem;
+}
+
+PersonItem *RelationItem::getSecond() const {
+    return toItem;
+}

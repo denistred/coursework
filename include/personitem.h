@@ -2,23 +2,34 @@
 #define PERSONITEM_H
 
 #include <QGraphicsTextItem>
+#include <QGraphicsPixmapItem>
+
 #include "relationitem.h"
-#include "mainwindow.h"
 #include "person.h"
 
-class PersonItem : public QGraphicsTextItem {
+class PersonItem : public QGraphicsTextItem
+{
     Q_OBJECT
 public:
-    PersonItem(Person *person);
+    explicit PersonItem(Person *person, QGraphicsItem *parent = nullptr);
+
     int getPersonId() const;
+    Person* getPerson() const;
+
     void addRelation(RelationItem *relation);
     void removeRelation(RelationItem *relation);
     void updateRelations();
-signals:
-    void personSelected(int personId);
-public slots:
-        void mousePressEvent(QGraphicsSceneMouseEvent *event);
-        void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void removeRelationWith(int otherPersonId);
+
+    signals:
+        void personSelected(int personId);
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+
+private slots:
+    void onPersonDataChanged();
 
 private:
     Person *person;
@@ -26,4 +37,4 @@ private:
     QList<RelationItem *> relations;
 };
 
-#endif
+#endif // PERSONITEM_H
