@@ -9,6 +9,8 @@ namespace Ui {
     class MainWindow;
 }
 
+class PersonScene;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

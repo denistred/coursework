@@ -7,7 +7,10 @@ void PersonScene::addPerson(Person *person) {
     auto *item = new PersonItem(person);
     connect(item, &PersonItem::personSelected, this, &PersonScene::personSelected);
     addItem(item);
-    item->setPos(0, 0);
+
+    item->setPos(nextItemPos);
+
+    nextItemPos.rx() += 170;
 }
 
 void PersonScene::selectPersonById(int id) {
@@ -17,4 +20,16 @@ void PersonScene::selectPersonById(int id) {
             personItem->setSelected(personItem->getPersonId() == id);
         }
     }
+}
+
+void PersonScene::createRelationBetweenSelected() {
+    QList<QGraphicsItem*> selected = selectedItems();
+    if (selected.size() != 2) return;
+
+    auto *item1 = qgraphicsitem_cast<PersonItem*>(selected[0]);
+    auto *item2 = qgraphicsitem_cast<PersonItem*>(selected[1]);
+    if (!item1 || !item2) return;
+
+    auto *line = new RelationItem(item1, item2);
+    addItem(line);
 }

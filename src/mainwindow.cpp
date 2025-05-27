@@ -3,14 +3,17 @@
 
 #include "../include/inputdialog.h"
 #include "../include/personlistwidget.h"
+#include "personscene.h"
 #include "ui_mainwindow.h"
+
+class PersonScene;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
     setWindowTitle(tr("Построение гениалогического древа"));
     setMinimumSize(400, 300);
-    resize(800, 600);
+    resize(1000, 800);
 
     ui->listWidget->loadFromFile("persons.json");
 
@@ -32,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(scene, &PersonScene::personSelected,
             ui->listWidget, &PersonListWidget::selectPersonById);
 
+    connect(ui->addRelationButton, &QPushButton::clicked, this, [this]() {
+        scene->createRelationBetweenSelected();
+    });
 }
 
 

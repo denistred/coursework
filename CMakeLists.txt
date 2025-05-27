@@ -33,6 +33,8 @@ add_executable(coursework main.cpp
         src/personitem.cpp
         include/personscene.h
         src/personscene.cpp
+        include/relationitem.h
+        src/relationitem.cpp
 )
 
 target_link_libraries(coursework
