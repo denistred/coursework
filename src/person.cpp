@@ -55,3 +55,11 @@ QString Person::getProfession() const {
 void Person::setProfession(const QString &profession) {
     this->profession = profession;
 }
+
+QString Person::getPhotoPath() const {
+    return this->photoPath;
+}
+
+void Person::setPhotoPath(const QString &photoPath) {
+    this->photoPath = photoPath;
+}

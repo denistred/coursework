@@ -1,5 +1,6 @@
 #include "../include/inputdialog.h"
 #include "ui_inputdialog.h"
+#include <QFileDialog>
 
 
 InputDialog::InputDialog(QWidget *parent, Person *person) : QDialog(parent),
@@ -12,6 +13,8 @@ InputDialog::InputDialog(QWidget *parent, Person *person) : QDialog(parent),
     if (person != nullptr) {
         this->loadPerson(person);
     }
+
+    connect(ui->loadPhotoButton, &QPushButton::clicked, this, &InputDialog::choosePhoto);
 }
 
 InputDialog::~InputDialog() {
@@ -65,4 +68,22 @@ void InputDialog::loadPerson(Person *person) {
     this->setBirthday(person->getBirthday());
     this->setPlaceOfBirth(person->getPlaceOfBirth());
     this->setProfession(person->getProfession());
+    this->setPhotoPath(person->getPhotoPath());
+}
+
+void InputDialog::setPhotoPath(const QString &photoPath) {
+    ui->filepathLabel->setText(photoPath);
+}
+
+QString InputDialog::getPhotoPath() const {
+    return ui->filepathLabel->text();
+}
+
+void InputDialog::choosePhoto() {
+    QString filename = QFileDialog::getOpenFileName(this,
+        "Выбор фотографии", QString(), "Изображения (*.png *.jpg *.jpeg *.bmp)");
+
+    if (!filename.isEmpty()) {
+        this->setPhotoPath(filename);
+    }
 }

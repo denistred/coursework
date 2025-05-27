@@ -18,6 +18,7 @@ public slots:
 
 private:
     Person *person;
+    QGraphicsPixmapItem *photoItem = nullptr;
 };
 
 #endif

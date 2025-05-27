@@ -49,6 +49,7 @@ void PersonListWidget::onItemDoubleClicked(const QModelIndex &index)
             person->setBirthday(dialog.getBirthday());
             person->setPlaceOfBirth(dialog.getPlaceOfBirth());
             person->setProfession(dialog.getProfession());
+            person->setPhotoPath(dialog.getPhotoPath());
             QMessageBox::information(this, "Данные", "Данные изменены");
         }
     }
@@ -71,6 +72,7 @@ void PersonListWidget::saveToFile(const QString &filename)
         obj["birthday"] = p->getBirthday().toString(Qt::ISODate);
         obj["placeOfBirth"] = p->getPlaceOfBirth();
         obj["profession"] = p->getProfession();
+        obj["photoPath"] = p->getPhotoPath();
         array.append(obj);
     }
 
@@ -107,6 +109,7 @@ void PersonListWidget::loadFromFile(const QString &filename)
 
         person->setPlaceOfBirth(obj["placeOfBirth"].toString());
         person->setProfession(obj["profession"].toString());
+        person->setPhotoPath(obj["photoPath"].toString());
 
         addPerson(person);
     }

@@ -26,6 +26,9 @@ public:
     void setPlaceOfBirth(const QString &placeOfBirth);
     QString getProfession() const;
     void setProfession(const QString &profession);
+    void choosePhoto();
+    void setPhotoPath(const QString &photoPath);
+    QString getPhotoPath() const;
     void loadPerson(Person *person);
 
 private:

@@ -32,6 +32,9 @@ class Person : public QObject
         QString getProfession() const;
         void setProfession(const QString &profession);
 
+        QString getPhotoPath() const;
+        void setPhotoPath(const QString &path);
+
     signals:
         void nameChanged(const QString &newName);
 
@@ -42,6 +45,7 @@ class Person : public QObject
         QDate birthday;
         QString placeOfBirth;
         QString profession;
+        QString photoPath;
 };
 
 

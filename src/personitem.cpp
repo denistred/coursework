@@ -9,6 +9,19 @@ PersonItem::PersonItem(Person *person)
     connect(person, &Person::nameChanged, this, [this](const QString &newName) {
         setPlainText(newName);
     });
+
+
+    if (!person->getPhotoPath().isEmpty()) {
+        QPixmap pix(person->getPhotoPath());
+        if (!pix.isNull()) {
+            QPixmap scaled = pix.scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            photoItem = new QGraphicsPixmapItem(scaled, this);
+            photoItem->setPos(0, -scaled.height());
+            photoItem->setAcceptedMouseButtons(Qt::AllButtons);
+            photoItem->setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable);
+            photoItem->setAcceptHoverEvents(true);
+        }
+    }
 }
 
 int PersonItem::getPersonId() const {
