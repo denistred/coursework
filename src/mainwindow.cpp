@@ -4,6 +4,7 @@
 #include "../include/inputdialog.h"
 #include "../include/personlistwidget.h"
 #include "personscene.h"
+#include "personfactory.h"
 #include "ui_mainwindow.h"
 
 class PersonScene;
@@ -15,8 +16,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     setMinimumSize(400, 300);
     resize(1000, 800);
 
-
-
+    factory = new PersonFactory();
+    ui->listWidget->setFactory(factory);
 
     scene = new PersonScene(this);
     ui->graphicsView->setScene(scene);
@@ -58,7 +59,7 @@ void MainWindow::showInputDialog() {
 
     if (dialog.exec() == QDialog::Accepted) {
         QString message = QString("Данные добавлены");
-        Person *person = new Person();
+        Person *person = factory->createPerson();
         person->setName(dialog.getName());
         person->setGender(dialog.getGender());
         person->setBirthday(dialog.getBirthday());

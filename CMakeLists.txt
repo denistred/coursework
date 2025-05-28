@@ -37,6 +37,9 @@ add_executable(coursework main.cpp
         include/relationitem.h
         src/relationitem.cpp
         static/resources.qrc
+        include/abstractfactory.h
+        src/personfactory.cpp
+        include/personfactory.h
 )
 
 target_link_libraries(coursework

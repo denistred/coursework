@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "person.h"
 #include "personscene.h"
+#include "abstractfactory.h"
 
 namespace Ui {
     class MainWindow;
@@ -29,6 +30,7 @@ private:
     Ui::MainWindow *ui;
     void closeEvent(QCloseEvent *event);
     PersonScene *scene;
+    AbstractItemFactory* factory;
 };
 
 #endif

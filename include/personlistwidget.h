@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 #include "person.h"
 #include "personscene.h"
+#include "abstractfactory.h"
 
 class PersonListWidget : public QListView
 {
@@ -18,6 +19,7 @@ public:
     void loadFromFile(const QString &filename);
     void selectPersonById(int id);
     QList<Person *> getPersons() const;
+    void setFactory(AbstractItemFactory* factory);
 
     void setScene(PersonScene *scene);
 
@@ -36,6 +38,7 @@ private:
     QStandardItemModel *model;
     QList<Person*> personsList;
     PersonScene *scene = nullptr;
+    AbstractItemFactory* factory;
 };
 
 #endif

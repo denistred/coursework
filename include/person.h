@@ -44,7 +44,7 @@ public:
         void dataChanged();
 
 private:
-    int id = -1;
+    int id;
     QString name;
     QString gender;
     QDate birthday;

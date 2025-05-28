@@ -11,7 +11,7 @@
 #include <QJsonObject>
 
 PersonListWidget::PersonListWidget(QWidget *parent)
-    : QListView(parent), model(new QStandardItemModel(this))
+    : QListView(parent), model(new QStandardItemModel(this)), factory(nullptr)
 {
     setModel(model);
     setSelectionMode(SingleSelection);
@@ -115,9 +115,9 @@ void PersonListWidget::loadFromFile(const QString &filename)
 
     for (const QJsonValue &val : array) {
         QJsonObject obj = val.toObject();
-
-        Person *person = new Person();
-        person->setId(obj["id"].toInt());
+        int id = obj["id"].toInt();
+        Person *person = factory->createPersonWithId(id);
+        factory->setId(id);
         person->setName(obj["name"].toString());
         person->setGender(obj["gender"].toString());
 
@@ -140,7 +140,7 @@ void PersonListWidget::loadFromFile(const QString &filename)
         model->appendRow(item);
 
         if (scene) {
-            PersonItem *pItem = new PersonItem(person);
+            PersonItem *pItem = factory->createPersonItem(person);
             scene->addItem(pItem);
         }
 
@@ -190,4 +190,8 @@ QList<Person *> PersonListWidget::getPersons() const {
 
 void PersonListWidget::setScene(PersonScene *s) {
     scene = s;
+}
+
+void PersonListWidget::setFactory(AbstractItemFactory* factory) {
+    this->factory = factory;
 }
