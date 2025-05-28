@@ -9,6 +9,10 @@ PersonItem::PersonItem(Person *person, QGraphicsItem *parent)
 {
     setFlags(ItemIsMovable | ItemIsSelectable);
 
+    if (!person->getPosition().isNull()) {
+        setPos(person->getPosition());
+    }
+
     setPlainText(person->getName());
 
     QString path = person->getPhotoPath();
@@ -57,6 +61,7 @@ void PersonItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 void PersonItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsTextItem::mouseMoveEvent(event);
     updateRelations();
+    person->setPosition(pos());
 }
 
 void PersonItem::onPersonDataChanged() {

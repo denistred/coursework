@@ -77,6 +77,8 @@ void PersonListWidget::saveToFile(const QString &filename)
         obj["placeOfBirth"] = p->getPlaceOfBirth();
         obj["profession"] = p->getProfession();
         obj["photoPath"] = p->getPhotoPath();
+        obj["x"] = p->getPosition().x();
+        obj["y"] = p->getPosition().y();
         QJsonArray relArray;
         for (int id : p->getRelations()) {
             relArray.append(id);
@@ -126,6 +128,9 @@ void PersonListWidget::loadFromFile(const QString &filename)
         person->setPlaceOfBirth(obj["placeOfBirth"].toString());
         person->setProfession(obj["profession"].toString());
         person->setPhotoPath(obj["photoPath"].toString());
+
+        QPointF pos(obj["x"].toDouble(), obj["y"].toDouble());
+        person->setPosition(pos);
 
         personsList.append(person);
 

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDate>
+#include <QPointF>
 
 class Person : public QObject
 {
@@ -36,6 +37,9 @@ public:
     void removeRelation(int id);
     void setRelations(const QList<int> &relations);
 
+    void setPosition(const QPointF &pos);
+    QPointF getPosition() const;
+
     signals:
         void dataChanged();
 
@@ -48,6 +52,7 @@ private:
     QString profession;
     QString photoPath;
     QList<int> relations;
+    QPointF position;
 };
 
 #endif // PERSON_H

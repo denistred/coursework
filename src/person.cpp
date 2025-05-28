@@ -99,3 +99,11 @@ void Person::setRelations(const QList<int> &newRelations) {
 void Person::removeRelation(int id) {
     relations.removeAll(id);
 }
+
+void Person::setPosition(const QPointF &pos) {
+    position = pos;
+}
+
+QPointF Person::getPosition() const {
+    return position;
+}
