@@ -3,6 +3,7 @@
 #include <QCoreApplication>
 #include <iostream>
 #include <QGraphicsSceneMouseEvent>
+#include <QPainter>
 
 PersonItem::PersonItem(Person *person, QGraphicsItem *parent)
     : QGraphicsTextItem(parent), person(person)
@@ -26,7 +27,13 @@ PersonItem::PersonItem(Person *person, QGraphicsItem *parent)
         qDebug() << "Не удалось загрузить ресурс!";
     }
     photoItem = new QGraphicsPixmapItem(pix.scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation), this);
-    photoItem->setPos(0, -100);
+
+    qreal textWidth = boundingRect().width();
+    qreal photoWidth = photoItem->pixmap().width();
+    qreal xPos = (textWidth - photoWidth) / 2.0;
+
+    photoItem->setPos(xPos, -100);
+
     connect(person, &Person::dataChanged, this, &PersonItem::onPersonDataChanged);
 }
 
@@ -85,4 +92,18 @@ void PersonItem::removeRelationWith(int otherPersonId) {
             return r->getFirst()->getPersonId() == otherPersonId ||
                    r->getSecond()->getPersonId() == otherPersonId;
         }), relations.end());
+}
+
+void PersonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    QRectF rect = boundingRect();
+
+    QRectF backgroundRect = rect.adjusted(-2, -2, 2, 2);
+
+    painter->setBrush(QBrush(Qt::white));
+    painter->setPen(Qt::NoPen);
+
+    painter->drawRect(backgroundRect);
+
+    QGraphicsTextItem::paint(painter, option, widget);
 }
