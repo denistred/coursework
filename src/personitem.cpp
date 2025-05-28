@@ -1,4 +1,7 @@
 #include "personitem.h"
+#include <QFile>
+#include <QCoreApplication>
+#include <iostream>
 #include <QGraphicsSceneMouseEvent>
 
 PersonItem::PersonItem(Person *person, QGraphicsItem *parent)
@@ -8,11 +11,18 @@ PersonItem::PersonItem(Person *person, QGraphicsItem *parent)
 
     setPlainText(person->getName());
 
-    if (!person->getPhotoPath().isEmpty()) {
-        photoItem = new QGraphicsPixmapItem(QPixmap(person->getPhotoPath()).scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation), this);
-        photoItem->setPos(0, -60);
+    QString path = person->getPhotoPath();
+    if (path.isEmpty() || !QFile::exists(path)) {
+        path = ":/default-avatar-icon-of-social-media-user-vector.jpg";
+        std::cout << path.toStdString() << std::endl;
     }
 
+    QPixmap pix(path);
+    if (pix.isNull()) {
+        qDebug() << "Не удалось загрузить ресурс!";
+    }
+    photoItem = new QGraphicsPixmapItem(pix.scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation), this);
+    photoItem->setPos(0, -100);
     connect(person, &Person::dataChanged, this, &PersonItem::onPersonDataChanged);
 }
 
@@ -54,10 +64,12 @@ void PersonItem::onPersonDataChanged() {
 
     if (photoItem) {
         if (!person->getPhotoPath().isEmpty()) {
-            photoItem->setPixmap(QPixmap(person->getPhotoPath()).scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            photoItem->setPixmap(QPixmap(person->getPhotoPath()).scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
             photoItem->show();
-        } else {
-            photoItem->hide();
+        }
+        else {
+            photoItem->setPixmap(QPixmap(":/default-avatar-icon-of-social-media-user-vector.jpg").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            photoItem->show();
         }
     }
 }

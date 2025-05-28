@@ -50,7 +50,6 @@ void PersonScene::removeRelationBetweenSelected() {
     auto *item2 = qgraphicsitem_cast<PersonItem *>(selected[1]);
     if (!item1 || !item2) return;
 
-    // Ищем все RelationItem между item1 и item2
     for (QGraphicsItem *item : items()) {
         auto *rel = qgraphicsitem_cast<RelationItem *>(item);
         if (!rel) continue;
@@ -88,10 +87,10 @@ void PersonScene::restoreRelations(const QList<Person *> &persons) {
         if (!fromItem) continue;
 
         for (int relatedId: person->getRelations()) {
-            if (id == relatedId) continue; // не соединяем сами с собой
+            if (id == relatedId) continue;
 
             QPair<int, int> key = qMakePair(qMin(id, relatedId), qMax(id, relatedId));
-            if (created.contains(key)) continue; // уже есть такая связь
+            if (created.contains(key)) continue;
 
             PersonItem *toItem = idToItem.value(relatedId, nullptr);
             if (!toItem) continue;
@@ -104,7 +103,6 @@ void PersonScene::restoreRelations(const QList<Person *> &persons) {
 
             created.insert(key);
 
-            // Отладочный вывод
             std::cout << fromItem->getPerson()->getName().toStdString()
                     << " <--> "
                     << toItem->getPerson()->getName().toStdString()

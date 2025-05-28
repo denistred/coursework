@@ -29,6 +29,7 @@ public:
     void choosePhoto();
     void setPhotoPath(const QString &photoPath);
     QString getPhotoPath() const;
+    void deletePhoto();
     void loadPerson(Person *person);
 
 private:

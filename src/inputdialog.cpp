@@ -15,6 +15,7 @@ InputDialog::InputDialog(QWidget *parent, Person *person) : QDialog(parent),
     }
 
     connect(ui->loadPhotoButton, &QPushButton::clicked, this, &InputDialog::choosePhoto);
+    connect(ui->deletePhotoButton, &QPushButton::clicked, this, &InputDialog::deletePhoto);
 }
 
 InputDialog::~InputDialog() {
@@ -86,4 +87,8 @@ void InputDialog::choosePhoto() {
     if (!filename.isEmpty()) {
         this->setPhotoPath(filename);
     }
+}
+
+void InputDialog::deletePhoto() {
+    this->setPhotoPath("");
 }

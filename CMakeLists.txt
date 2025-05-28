@@ -6,6 +6,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -35,6 +36,7 @@ add_executable(coursework main.cpp
         src/personscene.cpp
         include/relationitem.h
         src/relationitem.cpp
+        static/resources.qrc
 )
 
 target_link_libraries(coursework

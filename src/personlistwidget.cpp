@@ -135,12 +135,10 @@ void PersonListWidget::loadFromFile(const QString &filename)
         model->appendRow(item);
 
         if (scene) {
-            std::cout << "FIRST SCENE CREATING" << std::endl;
             PersonItem *pItem = new PersonItem(person);
             scene->addItem(pItem);
         }
 
-        // Сохраняем связи по id
         QJsonArray relArray = obj["relations"].toArray();
         QList<int> relations;
         for (const QJsonValue &v : relArray) {
@@ -149,7 +147,6 @@ void PersonListWidget::loadFromFile(const QString &filename)
         pendingRelations.append(relations);
     }
 
-    // Привязываем id связей
     for (int i = 0; i < personsList.size(); ++i) {
         Person *p = personsList[i];
         for (int relatedId : pendingRelations[i]) {
@@ -157,10 +154,7 @@ void PersonListWidget::loadFromFile(const QString &filename)
                 p->addRelation(relatedId);
         }
     }
-    std::cout << "trying to enter" << std::endl;
-    // Восстанавливаем линии в сцене
     if (scene) {
-        std::cout << "entered scene" << std::endl;
         scene->restoreRelations(personsList);
     }
 }
