@@ -40,6 +40,8 @@ add_executable(coursework main.cpp
         include/abstractfactory.h
         src/personfactory.cpp
         include/personfactory.h
+        include/personrepository.h
+        src/personrepository.cpp
 )
 
 target_link_libraries(coursework

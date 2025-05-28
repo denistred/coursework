@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     factory = new PersonFactory();
     ui->listWidget->setFactory(factory);
+    PersonRepository* repository = new PersonRepository(factory);
+    ui->listWidget->setRepository(repository);
 
     scene = new PersonScene(this);
     ui->graphicsView->setScene(scene);

@@ -67,101 +67,33 @@ void PersonListWidget::onItemClicked(const QModelIndex &index) {
 
 void PersonListWidget::saveToFile(const QString &filename)
 {
-    QJsonArray array;
-    for (const Person *p : personsList) {
-        QJsonObject obj;
-        obj["id"] = p->getId();
-        obj["name"] = p->getName();
-        obj["gender"] = p->getGender();
-        obj["birthday"] = p->getBirthday().toString(Qt::ISODate);
-        obj["placeOfBirth"] = p->getPlaceOfBirth();
-        obj["profession"] = p->getProfession();
-        obj["photoPath"] = p->getPhotoPath();
-        obj["x"] = p->getPosition().x();
-        obj["y"] = p->getPosition().y();
-        QJsonArray relArray;
-        for (int id : p->getRelations()) {
-            relArray.append(id);
-        }
-        obj["relations"] = relArray;
-
-        array.append(obj);
-    }
-
-    QJsonDocument doc(array);
-    QFile file(filename);
-    if (file.open(QIODevice::WriteOnly)) {
-        file.write(doc.toJson());
-        file.close();
-    }
+    if (repository)
+        repository->save(filename, personsList);
 }
 
 void PersonListWidget::loadFromFile(const QString &filename)
 {
-    QFile file(filename);
-    if (!file.open(QIODevice::ReadOnly)) return;
-
-    QByteArray data = file.readAll();
-    file.close();
-
-    QJsonDocument doc = QJsonDocument::fromJson(data);
-    if (!doc.isArray()) return;
+    if (!repository) return;
 
     clear();
+    personsList = repository->load(filename);
 
-    QJsonArray array = doc.array();
-    personsList.clear();
-    QList<QList<int>> pendingRelations;
+    model->clear();
 
-    for (const QJsonValue &val : array) {
-        QJsonObject obj = val.toObject();
-        int id = obj["id"].toInt();
-        Person *person = factory->createPersonWithId(id);
-        factory->setId(id);
-        person->setName(obj["name"].toString());
-        person->setGender(obj["gender"].toString());
-
-        QDate date = QDate::fromString(obj["birthday"].toString(), Qt::ISODate);
-        if (date.isValid())
-            person->setBirthday(date);
-
-        person->setPlaceOfBirth(obj["placeOfBirth"].toString());
-        person->setProfession(obj["profession"].toString());
-        person->setPhotoPath(obj["photoPath"].toString());
-
-        QPointF pos(obj["x"].toDouble(), obj["y"].toDouble());
-        person->setPosition(pos);
-
-        personsList.append(person);
-
-        QStandardItem *item = new QStandardItem(person->getName());
+    for (Person* person : personsList) {
+        QStandardItem* item = new QStandardItem(person->getName());
         item->setData(person->getId(), Qt::UserRole);
         item->setFlags(item->flags() & ~Qt::ItemIsEditable);
         model->appendRow(item);
 
         if (scene) {
-            PersonItem *pItem = factory->createPersonItem(person);
+            PersonItem* pItem = factory->createPersonItem(person);
             scene->addItem(pItem);
         }
-
-        QJsonArray relArray = obj["relations"].toArray();
-        QList<int> relations;
-        for (const QJsonValue &v : relArray) {
-            relations.append(v.toInt());
-        }
-        pendingRelations.append(relations);
     }
 
-    for (int i = 0; i < personsList.size(); ++i) {
-        Person *p = personsList[i];
-        for (int relatedId : pendingRelations[i]) {
-            if (!p->getRelations().contains(relatedId))
-                p->addRelation(relatedId);
-        }
-    }
-    if (scene) {
+    if (scene)
         scene->restoreRelations(personsList);
-    }
 }
 
 void PersonListWidget::removeSelectedPerson()
@@ -194,4 +126,8 @@ void PersonListWidget::setScene(PersonScene *s) {
 
 void PersonListWidget::setFactory(AbstractItemFactory* factory) {
     this->factory = factory;
+}
+
+void PersonListWidget::setRepository(PersonRepository* repository) {
+    this->repository = repository;
 }

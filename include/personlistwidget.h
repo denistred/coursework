@@ -6,6 +6,7 @@
 #include "person.h"
 #include "personscene.h"
 #include "abstractfactory.h"
+#include "personrepository.h"
 
 class PersonListWidget : public QListView
 {
@@ -20,7 +21,7 @@ public:
     void selectPersonById(int id);
     QList<Person *> getPersons() const;
     void setFactory(AbstractItemFactory* factory);
-
+    void setRepository(PersonRepository* repository);
     void setScene(PersonScene *scene);
 
     signals:
@@ -39,6 +40,7 @@ private:
     QList<Person*> personsList;
     PersonScene *scene = nullptr;
     AbstractItemFactory* factory;
+    PersonRepository* repository;
 };
 
 #endif
