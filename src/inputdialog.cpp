@@ -64,12 +64,17 @@ void InputDialog::setProfession(const QString &profession) {
 }
 
 void InputDialog::loadPerson(Person *person) {
-    this->setName(person->getName());
-    this->setGender(person->getGender());
-    this->setBirthday(person->getBirthday());
-    this->setPlaceOfBirth(person->getPlaceOfBirth());
-    this->setProfession(person->getProfession());
-    this->setPhotoPath(person->getPhotoPath());
+    this->setName(QString::fromStdString(person->getName()));
+    this->setGender(QString::fromStdString(person->getGender()));
+    //this->setBirthday(person->getBirthday());
+    std::tm tm = person->getBirthday();
+
+    QDate date = QDate(tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+
+    this->setBirthday(date);
+    this->setPlaceOfBirth(QString::fromStdString(person->getPlaceOfBirth()));
+    this->setProfession(QString::fromStdString(person->getProfession()));
+    this->setPhotoPath(QString::fromStdString(person->getPhotoPath()));
 }
 
 void InputDialog::setPhotoPath(const QString &photoPath) {

@@ -10,13 +10,12 @@ PersonItem::PersonItem(Person *person, QGraphicsItem *parent)
 {
     setFlags(ItemIsMovable | ItemIsSelectable);
 
-    if (!person->getPosition().isNull()) {
-        setPos(person->getPosition());
-    }
+    auto pos = person->getPosition();
+    setPos(pos.first, pos.second);
 
-    setPlainText(person->getName());
+    setPlainText(QString::fromStdString(person->getName()));
 
-    QString path = person->getPhotoPath();
+    QString path = QString::fromStdString(person->getPhotoPath());
     if (path.isEmpty() || !QFile::exists(path)) {
         path = ":/default-avatar-icon-of-social-media-user-vector.jpg";
         std::cout << path.toStdString() << std::endl;
@@ -34,7 +33,7 @@ PersonItem::PersonItem(Person *person, QGraphicsItem *parent)
 
     photoItem->setPos(xPos, -100);
 
-    connect(person, &Person::dataChanged, this, &PersonItem::onPersonDataChanged);
+    // connect(person, &Person::dataChanged, this, &PersonItem::onPersonDataChanged);
 }
 
 int PersonItem::getPersonId() const {
@@ -68,15 +67,15 @@ void PersonItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 void PersonItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsTextItem::mouseMoveEvent(event);
     updateRelations();
-    person->setPosition(pos());
+    person->setPosition(pos().x(), pos().y());
 }
 
 void PersonItem::onPersonDataChanged() {
-    setPlainText(person->getName());
+    setPlainText(QString::fromStdString(person->getName()));
 
     if (photoItem) {
-        if (!person->getPhotoPath().isEmpty()) {
-            photoItem->setPixmap(QPixmap(person->getPhotoPath()).scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        if (person->getPhotoPath() != "") {
+            photoItem->setPixmap(QPixmap(QString::fromStdString(person->getPhotoPath())).scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
             photoItem->show();
         }
         else {

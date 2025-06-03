@@ -1,109 +1,84 @@
 #include "person.h"
-
-Person::Person(QObject *parent) : QObject(parent) {
-}
+#include <algorithm>
 
 int Person::getId() const {
     return id;
 }
 
 void Person::setId(int newId) {
-    if (id != newId) {
-        id = newId;
-        emit dataChanged();
-    }
+    id = newId;
 }
 
-QString Person::getName() const {
+const std::string& Person::getName() const {
     return name;
 }
 
-void Person::setName(const QString &newName) {
-    if (name != newName) {
-        name = newName;
-        emit dataChanged();
-    }
+void Person::setName(const std::string& newName) {
+    name = newName;
 }
 
-QString Person::getGender() const {
+const std::string& Person::getGender() const {
     return gender;
 }
 
-void Person::setGender(const QString &newGender) {
-    if (gender != newGender) {
-        gender = newGender;
-        emit dataChanged();
-    }
+void Person::setGender(const std::string& newGender) {
+    gender = newGender;
 }
 
-QDate Person::getBirthday() const {
+const std::tm& Person::getBirthday() const {
     return birthday;
 }
 
-void Person::setBirthday(const QDate &newBirthday) {
-    if (birthday != newBirthday) {
-        birthday = newBirthday;
-        emit dataChanged();
-    }
+void Person::setBirthday(const std::tm& newBirthday) {
+    birthday = newBirthday;
 }
 
-QString Person::getPlaceOfBirth() const {
+const std::string& Person::getPlaceOfBirth() const {
     return placeOfBirth;
 }
 
-void Person::setPlaceOfBirth(const QString &newPlace) {
-    if (placeOfBirth != newPlace) {
-        placeOfBirth = newPlace;
-        emit dataChanged();
-    }
+void Person::setPlaceOfBirth(const std::string& newPlaceOfBirth) {
+    placeOfBirth = newPlaceOfBirth;
 }
 
-QString Person::getProfession() const {
+const std::string& Person::getProfession() const {
     return profession;
 }
 
-void Person::setProfession(const QString &newProfession) {
-    if (profession != newProfession) {
-        profession = newProfession;
-        emit dataChanged();
-    }
+void Person::setProfession(const std::string& newProfession) {
+    profession = newProfession;
 }
 
-QString Person::getPhotoPath() const {
+const std::string& Person::getPhotoPath() const {
     return photoPath;
 }
 
-void Person::setPhotoPath(const QString &newPath) {
-    if (photoPath != newPath) {
-        photoPath = newPath;
-        emit dataChanged();
-    }
+void Person::setPhotoPath(const std::string& newPhotoPath) {
+    photoPath = newPhotoPath;
 }
 
-QList<int> Person::getRelations() const {
+const std::vector<int>& Person::getRelations() const {
     return relations;
 }
 
-void Person::addRelation(int id) {
-    if (!relations.contains(id)) {
-        relations.append(id);
-        emit dataChanged();
+void Person::addRelation(int relId) {
+    if (std::find(relations.begin(), relations.end(), relId) == relations.end()) {
+        relations.push_back(relId);
     }
 }
 
-void Person::setRelations(const QList<int> &newRelations) {
+void Person::removeRelation(int relId) {
+    relations.erase(std::remove(relations.begin(), relations.end(), relId), relations.end());
+}
+
+void Person::setRelations(const std::vector<int>& newRelations) {
     relations = newRelations;
-    emit dataChanged();
 }
 
-void Person::removeRelation(int id) {
-    relations.removeAll(id);
-}
-
-void Person::setPosition(const QPointF &pos) {
-    position = pos;
-}
-
-QPointF Person::getPosition() const {
+std::pair<double, double> Person::getPosition() const {
     return position;
+}
+
+void Person::setPosition(double x, double y) {
+    position = {x, y};
 }

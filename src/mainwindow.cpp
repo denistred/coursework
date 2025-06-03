@@ -1,4 +1,5 @@
 #include <QMessageBox>
+#include <QDate>
 #include "include/mainwindow.h"
 
 #include "../include/inputdialog.h"
@@ -62,11 +63,17 @@ void MainWindow::showInputDialog() {
     if (dialog.exec() == QDialog::Accepted) {
         QString message = QString("Данные добавлены");
         Person *person = factory->createPerson();
-        person->setName(dialog.getName());
-        person->setGender(dialog.getGender());
-        person->setBirthday(dialog.getBirthday());
-        person->setPlaceOfBirth(dialog.getPlaceOfBirth());
-        person->setProfession(dialog.getProfession());
+        person->setName(dialog.getName().toStdString());
+        person->setGender(dialog.getGender().toStdString());
+        //person->setBirthday(dialog.getBirthday());
+        QDate qDate = dialog.getBirthday();
+        std::tm tmDate = {};
+        tmDate.tm_year = qDate.year() - 1900;
+        tmDate.tm_mon = qDate.month() - 1;
+        tmDate.tm_mday = qDate.day();
+        person->setBirthday(tmDate);
+        person->setPlaceOfBirth(dialog.getPlaceOfBirth().toStdString());
+        person->setProfession(dialog.getProfession().toStdString());
         this->addListItem(person);
 
         QMessageBox::information(this, "Данные", message);

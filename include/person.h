@@ -1,58 +1,54 @@
 #ifndef PERSON_H
 #define PERSON_H
 
-#include <QObject>
-#include <QDate>
-#include <QPointF>
+#include <string>
+#include <vector>
+#include <chrono>
+#include <utility>
 
-class Person : public QObject
-{
-    Q_OBJECT
+class Person {
 public:
-    explicit Person(QObject *parent = nullptr);
+    Person() = default;
 
     int getId() const;
     void setId(int id);
 
-    QString getName() const;
-    void setName(const QString &name);
+    const std::string& getName() const;
+    void setName(const std::string& name);
 
-    QString getGender() const;
-    void setGender(const QString &gender);
+    const std::string& getGender() const;
+    void setGender(const std::string& gender);
 
-    QDate getBirthday() const;
-    void setBirthday(const QDate &birthday);
+    const std::tm& getBirthday() const;
+    void setBirthday(const std::tm& birthday);
 
-    QString getPlaceOfBirth() const;
-    void setPlaceOfBirth(const QString &placeOfBirth);
+    const std::string& getPlaceOfBirth() const;
+    void setPlaceOfBirth(const std::string& placeOfBirth);
 
-    QString getProfession() const;
-    void setProfession(const QString &profession);
+    const std::string& getProfession() const;
+    void setProfession(const std::string& profession);
 
-    QString getPhotoPath() const;
-    void setPhotoPath(const QString &photoPath);
+    const std::string& getPhotoPath() const;
+    void setPhotoPath(const std::string& photoPath);
 
-    QList<int> getRelations() const;
+    const std::vector<int>& getRelations() const;
     void addRelation(int id);
     void removeRelation(int id);
-    void setRelations(const QList<int> &relations);
+    void setRelations(const std::vector<int>& relations);
 
-    void setPosition(const QPointF &pos);
-    QPointF getPosition() const;
-
-    signals:
-        void dataChanged();
+    std::pair<double, double> getPosition() const;
+    void setPosition(double x, double y);
 
 private:
-    int id;
-    QString name;
-    QString gender;
-    QDate birthday;
-    QString placeOfBirth;
-    QString profession;
-    QString photoPath;
-    QList<int> relations;
-    QPointF position;
+    int id = -1;
+    std::string name;
+    std::string gender;
+    std::tm birthday{};
+    std::string placeOfBirth;
+    std::string profession;
+    std::string photoPath;
+    std::vector<int> relations;
+    std::pair<double, double> position = {0.0, 0.0}; // x, y
 };
 
 #endif // PERSON_H

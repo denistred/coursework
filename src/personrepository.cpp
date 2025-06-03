@@ -23,13 +23,19 @@ QList<Person*> PersonRepository::load(const QString &filename) {
         if (id > maxId) maxId = id;
 
         Person* person = factory->createPersonWithId(id);
-        person->setName(obj["name"].toString());
-        person->setGender(obj["gender"].toString());
-        person->setBirthday(QDate::fromString(obj["birthday"].toString(), Qt::ISODate));
-        person->setPlaceOfBirth(obj["placeOfBirth"].toString());
-        person->setProfession(obj["profession"].toString());
-        person->setPhotoPath(obj["photoPath"].toString());
-        person->setPosition(QPointF(obj["x"].toDouble(), obj["y"].toDouble()));
+        person->setName(obj["name"].toString().toStdString());
+        person->setGender(obj["gender"].toString().toStdString());
+        //person->setBirthday(QDate::fromString(obj["birthday"].toString(), Qt::ISODate));
+        QString qstr = obj["birthday"].toString();
+        std::string dateStr = qstr.toStdString();
+        std::tm tm{};
+        std::istringstream ss(dateStr);
+        ss >> std::get_time(&tm, "%Y-%m-%d");
+        person->setBirthday(tm);
+        person->setPlaceOfBirth(obj["placeOfBirth"].toString().toStdString());
+        person->setProfession(obj["profession"].toString().toStdString());
+        person->setPhotoPath(obj["photoPath"].toString().toStdString());
+        person->setPosition(obj["x"].toDouble(), obj["y"].toDouble());
 
         QJsonArray relArray = obj["relations"].toArray();
         for (const QJsonValue &v : relArray) {
@@ -47,14 +53,18 @@ void PersonRepository::save(const QString &filename, const QList<Person*> &perso
     for (const Person* p : persons) {
         QJsonObject obj;
         obj["id"] = p->getId();
-        obj["name"] = p->getName();
-        obj["gender"] = p->getGender();
-        obj["birthday"] = p->getBirthday().toString(Qt::ISODate);
-        obj["placeOfBirth"] = p->getPlaceOfBirth();
-        obj["profession"] = p->getProfession();
-        obj["photoPath"] = p->getPhotoPath();
-        obj["x"] = p->getPosition().x();
-        obj["y"] = p->getPosition().y();
+        obj["name"] = QString::fromStdString(p->getName());
+        obj["gender"] = QString::fromStdString(p->getGender());
+        //obj["birthday"] = p->getBirthday().toString(Qt::ISODate);
+        std::tm tm = p->getBirthday();
+        char buffer[11]; // "YYYY-MM-DD" + null
+        std::strftime(buffer, sizeof(buffer), "%Y-%m-%d", &tm);
+        obj["birthday"] = QString::fromUtf8(buffer);
+        obj["placeOfBirth"] = QString::fromStdString(p->getPlaceOfBirth());
+        obj["profession"] = QString::fromStdString(p->getProfession());
+        obj["photoPath"] = QString::fromStdString(p->getPhotoPath());
+        obj["x"] = p->getPosition().first;
+        obj["y"] = p->getPosition().second;
 
         QJsonArray relArray;
         for (int id : p->getRelations()) {

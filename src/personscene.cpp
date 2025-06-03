@@ -103,9 +103,9 @@ void PersonScene::restoreRelations(const QList<Person *> &persons) {
 
             created.insert(key);
 
-            std::cout << fromItem->getPerson()->getName().toStdString()
+            std::cout << fromItem->getPerson()->getName()
                     << " <--> "
-                    << toItem->getPerson()->getName().toStdString()
+                    << toItem->getPerson()->getName()
                     << std::endl;
         }
     }

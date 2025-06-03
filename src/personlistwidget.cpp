@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
 
 PersonListWidget::PersonListWidget(QWidget *parent)
     : QListView(parent), model(new QStandardItemModel(this)), factory(nullptr)
@@ -23,7 +24,7 @@ PersonListWidget::PersonListWidget(QWidget *parent)
 void PersonListWidget::addPerson(Person *person)
 {
     personsList.append(person);
-    QStandardItem *item = new QStandardItem(person->getName());
+    QStandardItem *item = new QStandardItem(QString::fromStdString(person->getName()));
     item->setData(person->getId(), Qt::UserRole);
 
     item->setFlags(item->flags() & ~Qt::ItemIsEditable);
@@ -46,13 +47,18 @@ void PersonListWidget::onItemDoubleClicked(const QModelIndex &index)
         InputDialog dialog(this, person);
 
         if (dialog.exec() == QDialog::Accepted) {
-            person->setName(dialog.getName());
-            model->item(row)->setText(person->getName());
-            person->setGender(dialog.getGender());
-            person->setBirthday(dialog.getBirthday());
-            person->setPlaceOfBirth(dialog.getPlaceOfBirth());
-            person->setProfession(dialog.getProfession());
-            person->setPhotoPath(dialog.getPhotoPath());
+            person->setName(dialog.getName().toStdString());
+            model->item(row)->setText(QString::fromStdString(person->getName()));
+            person->setGender(dialog.getGender().toStdString());
+            QDate qDate = dialog.getBirthday();
+            std::tm tmDate = {};
+            tmDate.tm_year = qDate.year() - 1900;
+            tmDate.tm_mon = qDate.month() - 1;
+            tmDate.tm_mday = qDate.day();
+            person->setBirthday(tmDate);
+            person->setPlaceOfBirth(dialog.getPlaceOfBirth().toStdString());
+            person->setProfession(dialog.getProfession().toStdString());
+            person->setPhotoPath(dialog.getPhotoPath().toStdString());
             QMessageBox::information(this, "Данные", "Данные изменены");
         }
     }
@@ -81,7 +87,7 @@ void PersonListWidget::loadFromFile(const QString &filename)
     model->clear();
 
     for (Person* person : personsList) {
-        QStandardItem* item = new QStandardItem(person->getName());
+        QStandardItem* item = new QStandardItem(QString::fromStdString(person->getName()));
         item->setData(person->getId(), Qt::UserRole);
         item->setFlags(item->flags() & ~Qt::ItemIsEditable);
         model->appendRow(item);
