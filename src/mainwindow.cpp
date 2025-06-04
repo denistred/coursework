@@ -10,37 +10,36 @@
 
 class PersonScene;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow),
+      factory(new DefaultPersonFactory())
+{
     ui->setupUi(this);
 
-    setWindowTitle(tr("Построение гениалогического древа"));
+    setWindowTitle(tr("Построение генеалогического древа"));
     setMinimumSize(400, 300);
     resize(1000, 800);
 
-    factory = new PersonFactory();
-    ui->listWidget->setFactory(factory);
-    PersonRepository* repository = new PersonRepository(factory);
-    ui->listWidget->setRepository(repository);
+    PersonRepository::instance().setFactory(factory);
 
     scene = new PersonScene(this);
     ui->graphicsView->setScene(scene);
-    ui->listWidget->setScene(scene);
-    for (IPerson *p : ui->listWidget->getPersons()) {
-        scene->addPerson(p);
-    }
 
-    ui->listWidget->loadFromFile("persons.json");
+    ui->listWidget->setScene(scene);
+
+
     connect(ui->addButton, &QPushButton::clicked,
             this, &MainWindow::showInputDialog);
+
     connect(ui->deleteButton, &QPushButton::clicked,
-                ui->listWidget, &PersonListWidget::removeSelectedPerson);
+            ui->listWidget, &PersonListWidget::removeSelectedPerson);
 
     connect(ui->listWidget, &PersonListWidget::personSelected,
-        scene, &PersonScene::selectPersonById);
+            scene, &PersonScene::selectPersonById);
 
     connect(scene, &PersonScene::personSelected,
             ui->listWidget, &PersonListWidget::selectPersonById);
-
 
     connect(ui->addRelationButton, &QPushButton::clicked, this, [this]() {
         scene->createRelationBetweenSelected();
@@ -50,6 +49,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         scene->removeRelationBetweenSelected();
     });
 
+    connect(&repo, &PersonRepository::personAdded,
+            scene, &PersonScene::addPerson);
+
+    connect(&repo, &PersonRepository::personUpdated,
+            scene, &PersonScene::updatePerson);
+
+    repo.loadFromFile("persons.json");
 }
 
 
@@ -61,32 +67,35 @@ void MainWindow::showInputDialog() {
     InputDialog dialog(this);
 
     if (dialog.exec() == QDialog::Accepted) {
-        QString message = QString("Данные добавлены");
-        IPerson *person = factory->createPerson();
+
+        qDebug() << "Creating new person...";
+        IPerson *person = repo.createIndividual();
+        qDebug() << "Person created with ID:" << person->getId();
+
         person->setName(dialog.getName().toStdString());
         person->setGender(dialog.getGender().toStdString());
+
         QDate qDate = dialog.getBirthday();
         std::tm tmDate = {};
         tmDate.tm_year = qDate.year() - 1900;
         tmDate.tm_mon = qDate.month() - 1;
         tmDate.tm_mday = qDate.day();
         person->setBirthday(tmDate);
+
         person->setPlaceOfBirth(dialog.getPlaceOfBirth().toStdString());
         person->setProfession(dialog.getProfession().toStdString());
-        this->addListItem(person);
 
-        QMessageBox::information(this, "Данные", message);
+        qDebug() << "Person name set to:" << QString::fromStdString(person->getName());
+        qDebug() << "Persons in repo:" << repo.getAllPersons().size();
+
+        repo.notifyPersonUpdated(person);
+
+        QMessageBox::information(this, "Данные", "Данные добавлены");
     }
 }
 
-void MainWindow::addListItem(IPerson *person) {
-    person->setName(person->getName());
-    ui->listWidget->addPerson(person);
-
-    scene->addPerson(person);
-}
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    ui->listWidget->saveToFile("persons.json");
+    repo.saveToFile("persons.json");
     QMainWindow::closeEvent(event);
 }

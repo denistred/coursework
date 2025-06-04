@@ -5,7 +5,7 @@
 #include <QGraphicsPixmapItem>
 
 #include "relationitem.h"
-#include "person.h"
+#include "individual.h"
 
 class PersonItem : public QGraphicsTextItem
 {
@@ -20,6 +20,7 @@ public:
     void removeRelation(RelationItem *relation);
     void updateRelations();
     void removeRelationWith(int otherPersonId);
+    void updateData();
 
     signals:
         void personSelected(int personId);

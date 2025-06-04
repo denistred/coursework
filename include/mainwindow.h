@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "person.h"
+#include "individual.h"
 #include "personscene.h"
-#include "abstractfactory.h"
+#include "personrepository.h"
 
 namespace Ui {
     class MainWindow;
@@ -20,7 +20,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void addListItem(IPerson *person);
 
 private slots:
     void showInputDialog();
@@ -30,7 +29,8 @@ private:
     Ui::MainWindow *ui;
     void closeEvent(QCloseEvent *event);
     PersonScene *scene;
-    AbstractItemFactory* factory;
+    PersonRepository& repo = PersonRepository::instance();
+    PersonFactory* factory;
 };
 
 #endif

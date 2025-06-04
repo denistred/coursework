@@ -1,17 +1,14 @@
-#ifndef PERSON_H
-#define PERSON_H
+#ifndef INDIVIDUAL_H
+#define INDIVIDUAL_H
 
 #include "iperson.h"
-
 #include <string>
 #include <vector>
-#include <chrono>
-#include <utility>
-#include <algorithm>
+#include <stdexcept>
 
-class Person : public IPerson {
+class Individual : public IPerson {
 public:
-    Person() = default;
+    Individual() = default;
 
     // IBasicInfo
     int getId() const override { return id; }
@@ -43,22 +40,18 @@ public:
     bool isAlive() const override { return alive; }
     void setDead() override { alive = false; }
 
-    // IFamilyNode
+    // IFamilyNode - НЕ ПОДДЕРЖИВАЮТСЯ ДЛЯ ЛИСТА!
     void addChild(IPerson *child) override {
-        if (!alive) return;
-        children.push_back(child);
+        throw std::logic_error("Cannot add children to an Individual");
     }
 
     void removeChild(const std::string& name) override {
-        children.erase(std::remove_if(children.begin(), children.end(),
-            [&](IPerson*& p) {
-                return p->getName() == name;
-            }),
-            children.end());
+        throw std::logic_error("Individuals don't have children to remove");
     }
 
     const std::vector<IPerson*>& getChildren() const override {
-        return children;
+        static const std::vector<IPerson*> empty_children;
+        return empty_children;
     }
 
 private:
@@ -70,9 +63,7 @@ private:
     std::string profession;
     std::string photoPath;
     std::pair<double, double> position = {0.0, 0.0};
-
     bool alive = true;
-    std::vector<IPerson*> children;
 };
 
-#endif // PERSON_H
+#endif // INDIVIDUAL_H

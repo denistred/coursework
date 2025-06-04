@@ -12,14 +12,21 @@ void PersonScene::addPerson(IPerson *person) {
         auto *item = new PersonItem(person);
         connect(item, &PersonItem::personSelected, this, &PersonScene::personSelected);
         addItem(item);
-        item->setPos(nextItemPos);
-        nextItemPos.rx() += 170;
+        if (person->getPosition().first == 0 and person->getPosition().second == 0) {
+            item->setPos(nextItemPos);
+            nextItemPos.rx() += 0;
+        }
+        else {
+            item->setPos(person->getPosition().first, person->getPosition().second);
+        }
+
     } else {
         auto *item = new PersonItem(person);
         connect(item, &PersonItem::personSelected, this, &PersonScene::personSelected);
         addItem(item);
         item->setPos(nextItemPos);
         nextItemPos.rx() += 170;
+
 
         for (IPerson *child : person->getChildren()) {
             addPerson(child);
@@ -133,6 +140,20 @@ void PersonScene::restoreRelations(const QList<IPerson *> &persons) {
                       << " --> "
                       << child->getName()
                       << std::endl;
+        }
+    }
+}
+
+void PersonScene::updatePerson(IPerson *person) {
+    qDebug() << "Updating all PersonItems in the scene";
+
+    QList<QGraphicsItem*> allItems = items();
+
+    for (QGraphicsItem* item : allItems) {
+        PersonItem* personItem = dynamic_cast<PersonItem*>(item);
+        if (personItem) {
+            personItem->updateData();
+            qDebug() << "Updated PersonItem:" << personItem;
         }
     }
 }

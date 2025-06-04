@@ -2,7 +2,7 @@
 #define INPUTDIALOG_H
 
 #include <QDialog>
-#include "person.h"
+#include "individual.h"
 
 namespace Ui {
     class InputDialog;

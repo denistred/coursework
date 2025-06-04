@@ -32,8 +32,6 @@ PersonItem::PersonItem(IPerson *person, QGraphicsItem *parent)
     qreal xPos = (textWidth - photoWidth) / 2.0;
 
     photoItem->setPos(xPos, -100);
-
-    // connect(person, &Person::dataChanged, this, &PersonItem::onPersonDataChanged);
 }
 
 int PersonItem::getPersonId() const {
@@ -105,4 +103,35 @@ void PersonItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->drawRect(backgroundRect);
 
     QGraphicsTextItem::paint(painter, option, widget);
+}
+
+void PersonItem::updateData() {
+    qDebug() << "CHANGING NAME TO " << person->getName();
+    setPlainText(QString::fromStdString(person->getName()));
+
+    QString path = QString::fromStdString(person->getPhotoPath());
+    if (path.isEmpty() || !QFile::exists(path)) {
+        path = ":/default-avatar-icon-of-social-media-user-vector.jpg";
+    }
+
+    if (!photoItem) {
+        QPixmap pix(path);
+        if (!pix.isNull()) {
+            photoItem = new QGraphicsPixmapItem(pix.scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation), this);
+        }
+    } else {
+        QPixmap pix(path);
+        if (!pix.isNull()) {
+            photoItem->setPixmap(pix.scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        }
+    }
+
+    if (photoItem) {
+        qreal textWidth = boundingRect().width();
+        qreal photoWidth = photoItem->pixmap().width();
+        qreal xPos = (textWidth - photoWidth) / 2.0;
+        photoItem->setPos(xPos, -100);
+    }
+
+    update();
 }

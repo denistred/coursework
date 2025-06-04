@@ -2,7 +2,7 @@
 #define PERSONSCENE_H
 
 #include <QGraphicsScene>
-#include "person.h"
+#include "individual.h"
 #include "personitem.h"
 
 class PersonScene : public QGraphicsScene {
@@ -12,6 +12,7 @@ class PersonScene : public QGraphicsScene {
 public:
     explicit PersonScene(QObject *parent = nullptr);
     void addPerson(IPerson *person);
+    void updatePerson(IPerson *person);
     void selectPersonById(int id);
     void createRelationBetweenSelected();
     void removeRelationBetweenSelected();
@@ -21,6 +22,7 @@ public:
 
 private:
     QPointF nextItemPos = QPointF(0, 0);
+
 };
 
 

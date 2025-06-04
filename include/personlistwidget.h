@@ -3,10 +3,9 @@
 
 #include <QListView>
 #include <QStandardItemModel>
-#include "person.h"
-#include "personscene.h"
-#include "abstractfactory.h"
 #include "personrepository.h"
+#include "personfactory.h"
+#include "personscene.h"
 
 class PersonListWidget : public QListView
 {
@@ -14,21 +13,16 @@ class PersonListWidget : public QListView
 public:
     explicit PersonListWidget(QWidget *parent = nullptr);
 
-    void addPerson(IPerson *person);
-    void clear();
-    void saveToFile(const QString &fileName);
-    void loadFromFile(const QString &filename);
+    void setScene(PersonScene *s);
+    void setFactory(PersonFactory* factory);
     void selectPersonById(int id);
-    QList<IPerson *> getPersons() const;
-    void setFactory(AbstractItemFactory* factory);
-    void setRepository(PersonRepository* repository);
-    void setScene(PersonScene *scene);
+    void loadScene();
 
     signals:
-        void personDoubleClicked(const IPerson &person);
-        void personSelected(int personId);
+        void personSelected(int id);
 
 public slots:
+    void refreshList();
     void removeSelectedPerson();
 
 private slots:
@@ -37,10 +31,10 @@ private slots:
 
 private:
     QStandardItemModel *model;
-    QList<IPerson*> personsList;
-    PersonScene *scene = nullptr;
-    AbstractItemFactory* factory;
-    PersonRepository* repository;
+    PersonFactory* factory = nullptr;
+    PersonScene* scene = nullptr;
+    PersonRepository& repo = PersonRepository::instance();
+
 };
 
-#endif
+#endif // PERSONLISTWIDGET_H

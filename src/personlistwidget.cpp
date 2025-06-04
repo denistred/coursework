@@ -1,15 +1,8 @@
-#include "../include/personlistwidget.h"
-
-#include <iostream>
-
-#include "../include/inputdialog.h"
-#include <QStandardItem>
+#include "personlistwidget.h"
+#include "inputdialog.h"
 #include <QMessageBox>
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QString>
+#include <QDate>
+#include <iostream>
 
 PersonListWidget::PersonListWidget(QWidget *parent)
     : QListView(parent), model(new QStandardItemModel(this)), factory(nullptr)
@@ -17,123 +10,127 @@ PersonListWidget::PersonListWidget(QWidget *parent)
     setModel(model);
     setSelectionMode(SingleSelection);
 
-    connect(this, &QListView::doubleClicked, 
+    connect(this, &QListView::doubleClicked,
             this, &PersonListWidget::onItemDoubleClicked);
+    connect(this, &QListView::clicked,
+            this, &PersonListWidget::onItemClicked);
+
+
+    connect(&repo, &PersonRepository::personAdded,
+            this, &PersonListWidget::refreshList);
+    connect(&repo, &PersonRepository::personRemoved,
+            this, &PersonListWidget::refreshList);
+    connect(&repo, &PersonRepository::dataChanged,
+            this, &PersonListWidget::refreshList);
+
+    refreshList();
 }
 
-void PersonListWidget::addPerson(IPerson *person)
-{
-    personsList.append(person);
-    QStandardItem *item = new QStandardItem(QString::fromStdString(person->getName()));
-    item->setData(person->getId(), Qt::UserRole);
-
-    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-
-    model->appendRow(item);
+void PersonListWidget::loadScene() {
+    const auto& allPersons = repo.getAllPersons();
+    if (scene) {
+        qDebug() << "LOADING SCENE";
+        scene->clear();
+        for (IPerson* person : allPersons) {
+            scene->addPerson(person);
+        }
+    }
 }
 
-void PersonListWidget::clear()
+void PersonListWidget::refreshList()
 {
     model->clear();
-    personsList.clear();
+    const auto& allPersons = repo.getAllPersons();
+
+    for (IPerson* person : allPersons) {
+        QStandardItem *item = new QStandardItem(QString::fromStdString(person->getName()));
+        item->setData(person->getId(), Qt::UserRole);
+        item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+        model->appendRow(item);
+    }
+    qDebug() << "FIRST REFRESH";
+    loadScene();
+    if (scene && factory) {
+        scene->clear();
+
+        for (IPerson* person : allPersons) {
+            scene->addPerson(person);
+        }
+
+
+        QList<IPerson*> qList;
+        qList.reserve(allPersons.size());
+        for (IPerson* person : allPersons) {
+            qList.append(person);
+        }
+
+        scene->restoreRelations(qList);
+    }
 }
 
 void PersonListWidget::onItemDoubleClicked(const QModelIndex &index)
 {
-    int row = index.row();
-    if (row >= 0 && row < personsList.size()) {
-        IPerson *person = personsList[row];
+    if (!index.isValid()) return;
 
-        InputDialog dialog(this, person);
+    int id = model->itemFromIndex(index)->data(Qt::UserRole).toInt();
+    IPerson *person = repo.getPersonById(id);
+    if (!person) return;
 
-        if (dialog.exec() == QDialog::Accepted) {
-            person->setName(dialog.getName().toStdString());
-            model->item(row)->setText(QString::fromStdString(person->getName()));
-            person->setGender(dialog.getGender().toStdString());
-            QDate qDate = dialog.getBirthday();
-            std::tm tmDate = {};
-            tmDate.tm_year = qDate.year() - 1900;
-            tmDate.tm_mon = qDate.month() - 1;
-            tmDate.tm_mday = qDate.day();
-            person->setBirthday(tmDate);
-            person->setPlaceOfBirth(dialog.getPlaceOfBirth().toStdString());
-            person->setProfession(dialog.getProfession().toStdString());
-            person->setPhotoPath(dialog.getPhotoPath().toStdString());
-            QMessageBox::information(this, "Данные", "Данные изменены");
-        }
+    InputDialog dialog(this, person);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        person->setName(dialog.getName().toStdString());
+        person->setGender(dialog.getGender().toStdString());
+
+        QDate qDate = dialog.getBirthday();
+        std::tm tmDate = {};
+        tmDate.tm_year = qDate.year() - 1900;
+        tmDate.tm_mon = qDate.month() - 1;
+        tmDate.tm_mday = qDate.day();
+        person->setBirthday(tmDate);
+
+        person->setPlaceOfBirth(dialog.getPlaceOfBirth().toStdString());
+        person->setProfession(dialog.getProfession().toStdString());
+        person->setPhotoPath(dialog.getPhotoPath().toStdString());
+
+
+        model->itemFromIndex(index)->setText(QString::fromStdString(person->getName()));
+
+
+        repo.notifyPersonUpdated(person);
+        QMessageBox::information(this, "Данные", "Данные изменены");
     }
 }
 
 void PersonListWidget::onItemClicked(const QModelIndex &index) {
-    int row = index.row();
-    if (row >= 0 && row < personsList.size()) {
-        emit personSelected(personsList[row]->getId());
-    }
-}
-
-void PersonListWidget::saveToFile(const QString &filename)
-{
-    if (repository)
-        repository->save(filename, personsList);
-}
-
-void PersonListWidget::loadFromFile(const QString &filename)
-{
-    if (!repository) return;
-
-    clear();
-    personsList = repository->load(filename);
-
-    model->clear();
-
-    for (IPerson* person : personsList) {
-        QStandardItem* item = new QStandardItem(QString::fromStdString(person->getName()));
-        item->setData(person->getId(), Qt::UserRole);
-        item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-        model->appendRow(item);
-
-        if (scene) {
-            PersonItem* pItem = factory->createPersonItem(person);
-            scene->addItem(pItem);
-        }
-    }
-
-    if (scene)
-        scene->restoreRelations(personsList);
+    if (!index.isValid()) return;
+    int id = model->itemFromIndex(index)->data(Qt::UserRole).toInt();
+    emit personSelected(id);
 }
 
 void PersonListWidget::removeSelectedPerson()
 {
     QModelIndex index = currentIndex();
-    int row = index.row();
-    if (row >= 0 && row < personsList.size()) {
-        delete personsList[row];
-        personsList.removeAt(row);
-        model->removeRow(row);
-    }
+    if (!index.isValid()) return;
+
+    int id = model->itemFromIndex(index)->data(Qt::UserRole).toInt();
+    repo.removePerson(id);
 }
 
 void PersonListWidget::selectPersonById(int id) {
-    for (int i = 0; i < personsList.size(); ++i) {
-        if (personsList[i]->getId() == id) {
+    for (int i = 0; i < model->rowCount(); ++i) {
+        QStandardItem* item = model->item(i);
+        if (item->data(Qt::UserRole).toInt() == id) {
             setCurrentIndex(model->index(i, 0));
             break;
         }
     }
 }
 
-QList<IPerson *> PersonListWidget::getPersons() const {
-    return personsList;
-}
-
 void PersonListWidget::setScene(PersonScene *s) {
     scene = s;
 }
 
-void PersonListWidget::setFactory(AbstractItemFactory* factory) {
+void PersonListWidget::setFactory(PersonFactory* factory) {
     this->factory = factory;
-}
-
-void PersonListWidget::setRepository(PersonRepository* repository) {
-    this->repository = repository;
 }

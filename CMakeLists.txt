@@ -25,7 +25,7 @@ add_executable(coursework main.cpp
         include/mainwindow.h
         src/mainwindow.cpp
         ui/mainwindow.ui
-        include/person.h
+        include/individual.h
         src/person.cpp
         include/inputdialog.h
         src/inputdialog.cpp
@@ -37,12 +37,13 @@ add_executable(coursework main.cpp
         include/relationitem.h
         src/relationitem.cpp
         static/resources.qrc
-        include/abstractfactory.h
         src/personfactory.cpp
         include/personfactory.h
         include/personrepository.h
         src/personrepository.cpp
         include/iperson.h
+        include/family.h
+        src/defaultpersonfactory.cpp
 )
 
 target_link_libraries(coursework
