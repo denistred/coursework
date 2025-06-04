@@ -17,45 +17,23 @@ public:
     const std::string& getName() const override { return familyName; }
     void setName(const std::string& name_) override { familyName = name_; }
 
-    const std::string& getGender() const override {
-        throw std::logic_error("Family doesn't have gender");
-    }
-    void setGender(const std::string&) override {
-        throw std::logic_error("Cannot set gender for Family");
-    }
-    const std::tm& getBirthday() const override {
-        throw std::logic_error("Family doesn't have birthday");
-    }
-    void setBirthday(const std::tm&) override {
-        throw std::logic_error("Cannot set birthday for Family");
-    }
-    const std::string& getPlaceOfBirth() const override {
-        throw std::logic_error("Family doesn't have place of birth");
-    }
-    void setPlaceOfBirth(const std::string&) override {
-        throw std::logic_error("Cannot set place of birth for Family");
-    }
-    const std::string& getProfession() const override {
-        throw std::logic_error("Family doesn't have profession");
-    }
-    void setProfession(const std::string&) override {
-        throw std::logic_error("Cannot set profession for Family");
-    }
-    const std::string& getPhotoPath() const override {
-        throw std::logic_error("Family doesn't have photo");
-    }
-    void setPhotoPath(const std::string&) override {
-        throw std::logic_error("Cannot set photo for Family");
-    }
+    const std::string& getGender() const override {}
+    void setGender(const std::string&) override {}
+    const std::tm& getBirthday() const override {}
+    void setBirthday(const std::tm&) override {}
+    const std::string& getPlaceOfBirth() const override {}
+    void setPlaceOfBirth(const std::string&) override {}
+    const std::string& getProfession() const override {}
+    void setProfession(const std::string&) override {}
+    const std::string& getPhotoPath() const override {}
+    void setPhotoPath(const std::string&) override {}
 
 
     std::pair<double, double> getPosition() const override { return position; }
     void setPosition(double x, double y) override { position = {x, y}; }
 
     bool isAlive() const override { return true; }
-    void setDead() override {
-        throw std::logic_error("Cannot 'kill' a Family");
-    }
+    void setDead() override {}
 
     void addChild(IPerson *child) override {
         children.push_back(child);

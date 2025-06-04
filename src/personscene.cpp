@@ -1,6 +1,8 @@
 #include "../include/personscene.h"
 
 #include <iostream>
+
+#include "personrepository.h"
 #include "../include/personitem.h"
 #include "../include/relationitem.h"
 
@@ -62,27 +64,40 @@ void PersonScene::selectPersonById(int id) {
 void PersonScene::createRelationBetweenSelected() {
     QList<QGraphicsItem *> selected = selectedItems();
     if (selected.size() != 2) return;
-
+    qDebug() << "PersonScene::createRelationBetweenSelected";
     auto *item1 = qgraphicsitem_cast<PersonItem *>(selected[0]);
     auto *item2 = qgraphicsitem_cast<PersonItem *>(selected[1]);
+    qDebug() << "PersonScene::createRelationBetweenSelected";
     if (!item1 || !item2) return;
 
     IPerson *parent = item1->getPerson();
     IPerson *child = item2->getPerson();
-
+    qDebug() << "PersonScene::createRelationBetweenSelected";
     for (IPerson *existing : parent->getChildren()) {
         if (existing->getId() == child->getId())
             return;
     }
 
-    parent->addChild(child);
+    const double verticalDistance = std::abs(item1->y() - item2->y());
+    const bool isFamilyRelation = (verticalDistance <= 50.0);
+    qDebug() << "PersonScene::createRelationBetweenSelected";
+    if (isFamilyRelation) {
+        qDebug() << "PersonScene::createRelationBetweenSelected";
+        IPerson* family = PersonRepository::instance().createFamily();
+        family->setName("Test");
+        family->addChild(item1->getPerson());
+        family->addChild(item2->getPerson());
+        qDebug() << family->getName();
+    }
 
-    std::cout << parent->getName() << " --> " << child->getName() << std::endl;
-
-    auto *rel = new RelationItem(item1, item2);
-    addItem(rel);
-    item1->addRelation(rel);
-    item2->addRelation(rel);
+    // parent->addChild(child);
+    //
+    // std::cout << parent->getName() << " --> " << child->getName() << std::endl;
+    //
+    // auto *rel = new RelationItem(item1, item2);
+    // addItem(rel);
+    // item1->addRelation(rel);
+    // item2->addRelation(rel);
 }
 
 void PersonScene::removeRelationBetweenSelected() {

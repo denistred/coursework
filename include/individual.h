@@ -10,7 +10,7 @@ class Individual : public IPerson {
 public:
     Individual() = default;
 
-    // IBasicInfo
+
     int getId() const override { return id; }
     void setId(int id_) override { id = id_; }
 
@@ -32,15 +32,15 @@ public:
     const std::string& getPhotoPath() const override { return photoPath; }
     void setPhotoPath(const std::string& path) override { photoPath = path; }
 
-    // IVisualInfo
+
     std::pair<double, double> getPosition() const override { return position; }
     void setPosition(double x, double y) override { position = {x, y}; }
 
-    // ILifecycle
+
     bool isAlive() const override { return alive; }
     void setDead() override { alive = false; }
 
-    // IFamilyNode - НЕ ПОДДЕРЖИВАЮТСЯ ДЛЯ ЛИСТА!
+
     void addChild(IPerson *child) override {
         throw std::logic_error("Cannot add children to an Individual");
     }
