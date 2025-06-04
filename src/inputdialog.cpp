@@ -3,7 +3,7 @@
 #include <QFileDialog>
 
 
-InputDialog::InputDialog(QWidget *parent, Person *person) : QDialog(parent),
+InputDialog::InputDialog(QWidget *parent, IPerson *person) : QDialog(parent),
                                                             ui(new Ui::InputDialog) {
     ui->setupUi(this);
 
@@ -63,10 +63,9 @@ void InputDialog::setProfession(const QString &profession) {
     ui->professionLineEdit->setText(profession);
 }
 
-void InputDialog::loadPerson(Person *person) {
+void InputDialog::loadPerson(IPerson *person) {
     this->setName(QString::fromStdString(person->getName()));
     this->setGender(QString::fromStdString(person->getGender()));
-    //this->setBirthday(person->getBirthday());
     std::tm tm = person->getBirthday();
 
     QDate date = QDate(tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);

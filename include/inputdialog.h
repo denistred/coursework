@@ -13,7 +13,7 @@ class InputDialog : public QDialog
     Q_OBJECT
 
 public:
-    InputDialog(QWidget *parent = nullptr, Person *person = nullptr);
+    InputDialog(QWidget *parent = nullptr, IPerson *person = nullptr);
     ~InputDialog();
 
     QString getName() const;
@@ -30,7 +30,7 @@ public:
     void setPhotoPath(const QString &photoPath);
     QString getPhotoPath() const;
     void deletePhoto();
-    void loadPerson(Person *person);
+    void loadPerson(IPerson *person);
 
 private:
 

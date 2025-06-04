@@ -14,18 +14,18 @@ class PersonListWidget : public QListView
 public:
     explicit PersonListWidget(QWidget *parent = nullptr);
 
-    void addPerson(Person *person);
+    void addPerson(IPerson *person);
     void clear();
     void saveToFile(const QString &fileName);
     void loadFromFile(const QString &filename);
     void selectPersonById(int id);
-    QList<Person *> getPersons() const;
+    QList<IPerson *> getPersons() const;
     void setFactory(AbstractItemFactory* factory);
     void setRepository(PersonRepository* repository);
     void setScene(PersonScene *scene);
 
     signals:
-        void personDoubleClicked(const Person &person);
+        void personDoubleClicked(const IPerson &person);
         void personSelected(int personId);
 
 public slots:
@@ -37,7 +37,7 @@ private slots:
 
 private:
     QStandardItemModel *model;
-    QList<Person*> personsList;
+    QList<IPerson*> personsList;
     PersonScene *scene = nullptr;
     AbstractItemFactory* factory;
     PersonRepository* repository;

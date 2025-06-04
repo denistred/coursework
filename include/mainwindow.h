@@ -20,7 +20,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void addListItem(Person *person);
+    void addListItem(IPerson *person);
 
 private slots:
     void showInputDialog();

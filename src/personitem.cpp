@@ -5,7 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
-PersonItem::PersonItem(Person *person, QGraphicsItem *parent)
+PersonItem::PersonItem(IPerson *person, QGraphicsItem *parent)
     : QGraphicsTextItem(parent), person(person)
 {
     setFlags(ItemIsMovable | ItemIsSelectable);
@@ -40,7 +40,7 @@ int PersonItem::getPersonId() const {
     return person->getId();
 }
 
-Person* PersonItem::getPerson() const {
+IPerson* PersonItem::getPerson() const {
     return person;
 }
 

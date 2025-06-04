@@ -8,14 +8,14 @@
 #include "relationitem.h"
 
 
-Person* PersonFactory::createPerson() {
+IPerson* PersonFactory::createPerson() {
     Person* person = new Person();
     person->setId(personNextId++);
     std::cout << person->getId() << "Simple created" << std::endl;
     return person;
 }
 
-Person* PersonFactory::createPersonWithId(int id) {
+IPerson* PersonFactory::createPersonWithId(int id) {
     Person* person = new Person();
     person->setId(id);
     this->setId(id);
@@ -28,7 +28,7 @@ void PersonFactory::setId(int id) {
     }
 }
 
-PersonItem* PersonFactory::createPersonItem(Person* person) {
+PersonItem* PersonFactory::createPersonItem(IPerson* person) {
     return new PersonItem(person);
 }
 RelationItem* PersonFactory::createRelationItem(PersonItem* from, PersonItem* to) {

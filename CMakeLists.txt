@@ -43,9 +43,6 @@ add_executable(coursework main.cpp
         include/personrepository.h
         src/personrepository.cpp
         include/iperson.h
-        include/ibasicinfo.h
-        include/ivisualinfo.h
-        include/ifamilynode.h
 )
 
 target_link_libraries(coursework

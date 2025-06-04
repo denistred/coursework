@@ -3,10 +3,10 @@
 
 class PersonFactory : public AbstractItemFactory {
 public:
-    Person* createPerson() override;
-    Person* createPersonWithId(int id);
+    IPerson* createPerson() override;
+    IPerson* createPersonWithId(int id);
     void setId(int id);
-    PersonItem* createPersonItem(Person* person) override;
+    PersonItem* createPersonItem(IPerson* person) override;
     RelationItem* createRelationItem(PersonItem* from, PersonItem* to) override;
 private:
     int personNextId = 0;

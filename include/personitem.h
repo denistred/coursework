@@ -11,10 +11,10 @@ class PersonItem : public QGraphicsTextItem
 {
     Q_OBJECT
 public:
-    explicit PersonItem(Person *person, QGraphicsItem *parent = nullptr);
+    explicit PersonItem(IPerson *person, QGraphicsItem *parent = nullptr);
 
     int getPersonId() const;
-    Person* getPerson() const;
+    IPerson* getPerson() const;
 
     void addRelation(RelationItem *relation);
     void removeRelation(RelationItem *relation);
@@ -33,7 +33,7 @@ private slots:
     void onPersonDataChanged();
 
 private:
-    Person *person;
+    IPerson *person;
     QGraphicsPixmapItem *photoItem = nullptr;
     QList<RelationItem *> relations;
     QGraphicsRectItem* textBackground = nullptr;

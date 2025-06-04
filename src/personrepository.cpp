@@ -6,8 +6,8 @@
 
 PersonRepository::PersonRepository(AbstractItemFactory* factory) : factory(factory) {}
 
-QList<Person*> PersonRepository::load(const QString &filename) {
-    QList<Person*> persons;
+QList<IPerson*> PersonRepository::load(const QString &filename) {
+    QList<IPerson*> persons;
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly)) return persons;
 
@@ -22,7 +22,7 @@ QList<Person*> PersonRepository::load(const QString &filename) {
         int id = obj["id"].toInt();
         if (id > maxId) maxId = id;
 
-        Person* person = factory->createPersonWithId(id);
+        IPerson* person = factory->createPersonWithId(id);
         person->setName(obj["name"].toString().toStdString());
         person->setGender(obj["gender"].toString().toStdString());
         //person->setBirthday(QDate::fromString(obj["birthday"].toString(), Qt::ISODate));
@@ -39,7 +39,7 @@ QList<Person*> PersonRepository::load(const QString &filename) {
 
         QJsonArray relArray = obj["relations"].toArray();
         for (const QJsonValue &v : relArray) {
-            person->addRelation(v.toInt());
+            //person->addRelation(v.toInt());
         }
 
         persons.append(person);
@@ -48,9 +48,9 @@ QList<Person*> PersonRepository::load(const QString &filename) {
     return persons;
 }
 
-void PersonRepository::save(const QString &filename, const QList<Person*> &persons) {
+void PersonRepository::save(const QString &filename, const QList<IPerson*> &persons) {
     QJsonArray array;
-    for (const Person* p : persons) {
+    for (const IPerson* p : persons) {
         QJsonObject obj;
         obj["id"] = p->getId();
         obj["name"] = QString::fromStdString(p->getName());
@@ -67,9 +67,9 @@ void PersonRepository::save(const QString &filename, const QList<Person*> &perso
         obj["y"] = p->getPosition().second;
 
         QJsonArray relArray;
-        for (int id : p->getRelations()) {
-            relArray.append(id);
-        }
+        // for (int id : p->getRelations()) {
+        //     relArray.append(id);
+        // }
         obj["relations"] = relArray;
         array.append(obj);
     }

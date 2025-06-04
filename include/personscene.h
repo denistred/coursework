@@ -11,11 +11,11 @@ class PersonScene : public QGraphicsScene {
 
 public:
     explicit PersonScene(QObject *parent = nullptr);
-    void addPerson(Person *person);
+    void addPerson(IPerson *person);
     void selectPersonById(int id);
     void createRelationBetweenSelected();
     void removeRelationBetweenSelected();
-    void restoreRelations(const QList<Person *> &persons);
+    void restoreRelations(const QList<IPerson *> &persons);
     signals:
         void personSelected(int personId);
 

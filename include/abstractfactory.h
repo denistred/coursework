@@ -7,10 +7,10 @@
 
 class AbstractItemFactory {
 public:
-    virtual Person* createPerson() = 0;
-    virtual Person* createPersonWithId(int id) = 0;
+    virtual IPerson* createPerson() = 0;
+    virtual IPerson* createPersonWithId(int id) = 0;
     virtual void setId(int id) = 0;
-    virtual PersonItem* createPersonItem(Person* person) = 0;
+    virtual PersonItem* createPersonItem(IPerson* person) = 0;
     virtual RelationItem* createRelationItem(PersonItem* from, PersonItem* to) = 0;
     virtual ~AbstractItemFactory() = default;
 };

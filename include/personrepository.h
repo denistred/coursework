@@ -11,8 +11,8 @@ class PersonRepository {
 public:
     explicit PersonRepository(AbstractItemFactory* factory);
 
-    QList<Person*> load(const QString& filename);
-    void save(const QString& filename, const QList<Person*>& persons);
+    QList<IPerson*> load(const QString& filename);
+    void save(const QString& filename, const QList<IPerson*>& persons);
 
 private:
     AbstractItemFactory* factory;

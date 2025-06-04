@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     scene = new PersonScene(this);
     ui->graphicsView->setScene(scene);
     ui->listWidget->setScene(scene);
-    for (Person *p : ui->listWidget->getPersons()) {
+    for (IPerson *p : ui->listWidget->getPersons()) {
         scene->addPerson(p);
     }
 
@@ -62,10 +62,9 @@ void MainWindow::showInputDialog() {
 
     if (dialog.exec() == QDialog::Accepted) {
         QString message = QString("Данные добавлены");
-        Person *person = factory->createPerson();
+        IPerson *person = factory->createPerson();
         person->setName(dialog.getName().toStdString());
         person->setGender(dialog.getGender().toStdString());
-        //person->setBirthday(dialog.getBirthday());
         QDate qDate = dialog.getBirthday();
         std::tm tmDate = {};
         tmDate.tm_year = qDate.year() - 1900;
@@ -80,7 +79,7 @@ void MainWindow::showInputDialog() {
     }
 }
 
-void MainWindow::addListItem(Person *person) {
+void MainWindow::addListItem(IPerson *person) {
     person->setName(person->getName());
     ui->listWidget->addPerson(person);
 

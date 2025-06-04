@@ -1,21 +1,46 @@
 #include "../include/personscene.h"
 
 #include <iostream>
-
 #include "../include/personitem.h"
+#include "../include/relationitem.h"
 
 PersonScene::PersonScene(QObject *parent) : QGraphicsScene(parent) {
 }
 
-void PersonScene::addPerson(Person *person) {
-    auto *item = new PersonItem(person);
+void PersonScene::addPerson(IPerson *person) {
+    if (person->getChildren().empty()) {
+        auto *item = new PersonItem(person);
+        connect(item, &PersonItem::personSelected, this, &PersonScene::personSelected);
+        addItem(item);
+        item->setPos(nextItemPos);
+        nextItemPos.rx() += 170;
+    } else {
+        auto *item = new PersonItem(person);
+        connect(item, &PersonItem::personSelected, this, &PersonScene::personSelected);
+        addItem(item);
+        item->setPos(nextItemPos);
+        nextItemPos.rx() += 170;
 
-    connect(item, &PersonItem::personSelected, this, &PersonScene::personSelected);
-    addItem(item);
+        for (IPerson *child : person->getChildren()) {
+            addPerson(child);
 
-    item->setPos(nextItemPos);
+            PersonItem *childItem = nullptr;
+            for (QGraphicsItem *gItem : items()) {
+                auto *temp = qgraphicsitem_cast<PersonItem *>(gItem);
+                if (temp && temp->getPersonId() == child->getId()) {
+                    childItem = temp;
+                    break;
+                }
+            }
 
-    nextItemPos.rx() += 170;
+            if (childItem) {
+                auto *rel = new RelationItem(item, childItem);
+                addItem(rel);
+                item->addRelation(rel);
+                childItem->addRelation(rel);
+            }
+        }
+    }
 }
 
 void PersonScene::selectPersonById(int id) {
@@ -35,11 +60,22 @@ void PersonScene::createRelationBetweenSelected() {
     auto *item2 = qgraphicsitem_cast<PersonItem *>(selected[1]);
     if (!item1 || !item2) return;
 
-    auto *line = new RelationItem(item1, item2);
-    addItem(line);
+    IPerson *parent = item1->getPerson();
+    IPerson *child = item2->getPerson();
 
-    item1->getPerson()->addRelation(item2->getPersonId());
-    item2->getPerson()->addRelation(item1->getPersonId());
+    for (IPerson *existing : parent->getChildren()) {
+        if (existing->getId() == child->getId())
+            return;
+    }
+
+    parent->addChild(child);
+
+    std::cout << parent->getName() << " --> " << child->getName() << std::endl;
+
+    auto *rel = new RelationItem(item1, item2);
+    addItem(rel);
+    item1->addRelation(rel);
+    item2->addRelation(rel);
 }
 
 void PersonScene::removeRelationBetweenSelected() {
@@ -49,6 +85,11 @@ void PersonScene::removeRelationBetweenSelected() {
     auto *item1 = qgraphicsitem_cast<PersonItem *>(selected[0]);
     auto *item2 = qgraphicsitem_cast<PersonItem *>(selected[1]);
     if (!item1 || !item2) return;
+
+    IPerson *parent = item1->getPerson();
+    IPerson *child = item2->getPerson();
+
+    parent->removeChild(child->getName());
 
     for (QGraphicsItem *item : items()) {
         auto *rel = qgraphicsitem_cast<RelationItem *>(item);
@@ -60,17 +101,12 @@ void PersonScene::removeRelationBetweenSelected() {
         if ((first == item1 && second == item2) || (first == item2 && second == item1)) {
             removeItem(rel);
             delete rel;
-
-            item1->getPerson()->removeRelation(item2->getPersonId());
-            item2->getPerson()->removeRelation(item1->getPersonId());
-
             break;
         }
     }
 }
 
-
-void PersonScene::restoreRelations(const QList<Person *> &persons) {
+void PersonScene::restoreRelations(const QList<IPerson *> &persons) {
     QMap<int, PersonItem *> idToItem;
     for (QGraphicsItem *item: items()) {
         auto *pItem = qgraphicsitem_cast<PersonItem *>(item);
@@ -79,34 +115,24 @@ void PersonScene::restoreRelations(const QList<Person *> &persons) {
         }
     }
 
-    QSet<QPair<int, int> > created;
+    for (IPerson *parent: persons) {
+        int parentId = parent->getId();
+        PersonItem *parentItem = idToItem.value(parentId, nullptr);
+        if (!parentItem) continue;
 
-    for (Person *person: persons) {
-        int id = person->getId();
-        PersonItem *fromItem = idToItem.value(id, nullptr);
-        if (!fromItem) continue;
+        for (IPerson *child : parent->getChildren()) {
+            PersonItem *childItem = idToItem.value(child->getId(), nullptr);
+            if (!childItem) continue;
 
-        for (int relatedId: person->getRelations()) {
-            if (id == relatedId) continue;
-
-            QPair<int, int> key = qMakePair(qMin(id, relatedId), qMax(id, relatedId));
-            if (created.contains(key)) continue;
-
-            PersonItem *toItem = idToItem.value(relatedId, nullptr);
-            if (!toItem) continue;
-
-            auto *rel = new RelationItem(fromItem, toItem);
+            auto *rel = new RelationItem(parentItem, childItem);
             addItem(rel);
+            parentItem->addRelation(rel);
+            childItem->addRelation(rel);
 
-            fromItem->addRelation(rel);
-            toItem->addRelation(rel);
-
-            created.insert(key);
-
-            std::cout << fromItem->getPerson()->getName()
-                    << " <--> "
-                    << toItem->getPerson()->getName()
-                    << std::endl;
+            std::cout << parent->getName()
+                      << " --> "
+                      << child->getName()
+                      << std::endl;
         }
     }
 }

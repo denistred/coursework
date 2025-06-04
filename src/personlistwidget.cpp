@@ -21,7 +21,7 @@ PersonListWidget::PersonListWidget(QWidget *parent)
             this, &PersonListWidget::onItemDoubleClicked);
 }
 
-void PersonListWidget::addPerson(Person *person)
+void PersonListWidget::addPerson(IPerson *person)
 {
     personsList.append(person);
     QStandardItem *item = new QStandardItem(QString::fromStdString(person->getName()));
@@ -42,7 +42,7 @@ void PersonListWidget::onItemDoubleClicked(const QModelIndex &index)
 {
     int row = index.row();
     if (row >= 0 && row < personsList.size()) {
-        Person *person = personsList[row];
+        IPerson *person = personsList[row];
 
         InputDialog dialog(this, person);
 
@@ -86,7 +86,7 @@ void PersonListWidget::loadFromFile(const QString &filename)
 
     model->clear();
 
-    for (Person* person : personsList) {
+    for (IPerson* person : personsList) {
         QStandardItem* item = new QStandardItem(QString::fromStdString(person->getName()));
         item->setData(person->getId(), Qt::UserRole);
         item->setFlags(item->flags() & ~Qt::ItemIsEditable);
@@ -122,7 +122,7 @@ void PersonListWidget::selectPersonById(int id) {
     }
 }
 
-QList<Person *> PersonListWidget::getPersons() const {
+QList<IPerson *> PersonListWidget::getPersons() const {
     return personsList;
 }
 
